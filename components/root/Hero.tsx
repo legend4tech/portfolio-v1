@@ -2,31 +2,13 @@
 
 import { motion } from "framer-motion";
 import { ExternalLink, Sparkles } from "lucide-react";
-import Image from "next/image";
 import { Typewriter } from "react-simple-typewriter";
-
-const social = [
-  {
-    name: "github",
-    href: "https://github.com",
-    logo: "/github.png",
-  },
-  {
-    name: "linkedin",
-    href: "https://linkedin.com",
-    logo: "/linkedin.png",
-  },
-  {
-    name: "instagram",
-    href: "https://instagram.com",
-    logo: "/instagram.png",
-  },
-];
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 export function Hero() {
   return (
     <div className="min-h-screen hero-gradient overflow-hidden">
-      <div className="container mx-auto px-6 pt-32">
+      <div className="container mx-auto px-6 lg:pt-10 pt-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left Column */}
           <motion.div
@@ -88,7 +70,7 @@ export function Hero() {
             {/* CTA Buttons */}
             <div className="flex gap-4 pt-4">
               <a
-                href="#projects"
+                href="#portfolio"
                 className="glass-card px-6 py-3 rounded-full hover:bg-white/10 transition-colors inline-flex items-center gap-2"
               >
                 Projects
@@ -102,24 +84,6 @@ export function Hero() {
                 <ExternalLink className="w-4 h-4" />
               </a>
             </div>
-
-            {/* Social Icons */}
-            <div className="flex gap-4 pt-8 pb-6">
-              {social.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.href}
-                  className="glass-card p-3 rounded-full hover:bg-white/10 transition-colors"
-                >
-                  <Image
-                    src={social.logo}
-                    alt={social.name}
-                    width={40}
-                    height={40}
-                  />
-                </a>
-              ))}
-            </div>
           </motion.div>
 
           {/* Right Column - Hero Image */}
@@ -127,16 +91,14 @@ export function Hero() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
-            className="relative"
+            className="relative w-full aspect-square max-w-2xl mx-auto"
           >
-            {/* <Image
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Meta-5WwkG231NsubvVPlLeiXVwFLlIgJMJ.png"
-              alt="Frontend Developer Illustration"
-              width={600}
-              height={600}
-              className="w-full h-auto"
-              priority
-            /> */}
+            <DotLottieReact
+              src="https://lottie.host/d35da9a7-96ed-4f5a-9916-f6bb3fdb84f5/qwazBY4n6Z.lottie"
+              loop
+              autoplay
+              className="w-full h-full"
+            />
           </motion.div>
         </div>
       </div>

@@ -30,7 +30,8 @@ export function Navbar() {
             <Image
               src="/logo.png"
               alt="Logo"
-              layout="fill"
+              width={150}
+              height={50}
               objectFit="contain"
               priority
             />

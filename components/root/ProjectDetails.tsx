@@ -10,64 +10,65 @@ import {
   ExternalLink,
   Github,
   Package,
-  Package2Icon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 // import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { ProjectNotFound } from "./Fallbacks";
+import { projectData } from "@/lib/project_data";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "../ui/breadcrumb";
+import { useRouter } from "next/navigation";
 
 // This would typically come from your data source
-const projectData = {
-  slug: "growtopia-calculator",
-  title: "Growtopia-Calculator",
-  description:
-    "Growtopia Surgery Shop Calculator membantu pemain Growtopia menghitung keuntungan dari penjualan tools di vending shop surgery. Cukup masukkan jumlah pack dan harga per pack untuk menghitung modal, profit kotor, dan profit bersih, sehingga memudahkan perencanaan dan strategi penjualan.",
-  image: "/22.jpg",
-  stats: [
-    { number: 5, label: "Total Teknologi" },
-    { number: 3, label: "Fitur Utama" },
-  ],
-  technologies: ["GSAP", "AOS", "HTML", "CSS", "Javascript", "Nextjs"],
-  keyFeatures: [
-    "Menghitung modal awal, profit kotor, dan profit bersih secara otomatis dari penjualan tools.",
-    "Mensimulasikan jumlah pack yang dijual dan harga per pack untuk merencanakan strategi penjualan.",
-    "Memberikan ringkasan data penjualan untuk membantu analisis performa toko vending.",
-  ],
-  demoUrl: "#",
-  githubUrl: "#",
-};
 
-export default function ProjectDetailsPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default function ProjectDetailsPage({ id }: { id: string }) {
   const [isImageLoading, setIsImageLoading] = useState(true);
+  const project = projectData.find((p) => p.id === Number(id));
+  const router = useRouter();
+
+  if (!project) {
+    return <ProjectNotFound />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900/20 via-gray-900 to-blue-900/20">
       <div className="container mx-auto px-6 py-8">
         {/* Navigation */}
-        <nav className="mb-8">
-          <div className="flex items-center gap-2 text-sm text-gray-400">
-            <Link
-              href="/portfolio"
-              className="hover:text-purple-400 transition-colors"
+        <Breadcrumb className="mb-8">
+          <BreadcrumbList className="text-sm text-gray-400">
+            <span
+              onClick={router.back}
+              className="flex items-center gap-1 hover:text-purple-400 transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" />
-            </Link>
-            <span>/</span>
-            <Link
-              href="/portfolio"
-              className="hover:text-purple-400 transition-colors"
-            >
-              Projects
-            </Link>
-            <span>/</span>
-            <span className="text-purple-400">{projectData.title}</span>
-          </div>
-        </nav>
+              Back
+            </span>
+
+            <BreadcrumbSeparator>/</BreadcrumbSeparator>
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                asChild
+                className="hover:text-purple-400 transition-colors"
+              >
+                <Link href="/#portfolio">Projects</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator>/</BreadcrumbSeparator>
+            <BreadcrumbItem>
+              <BreadcrumbPage className="text-purple-400">
+                {project.title}
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
 
         {/* Main Content */}
         <div className="grid lg:grid-cols-2 gap-8 items-start">
@@ -81,45 +82,41 @@ export default function ProjectDetailsPage({
             {/* Title and Description */}
             <div className="space-y-4">
               <h1 className="text-4xl font-bold gradient-text">
-                {projectData.title}
+                {project.title}
               </h1>
               <p className="text-gray-400 leading-relaxed">
-                {projectData.description}
+                {project.description}
               </p>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-2 gap-4">
-              {projectData.stats.map((stat, index) => (
-                <div
-                  key={index}
-                  className={cn(
-                    `glass-card p-4 rounded-xl space-y-1 hover:border-purple-400/50 hover:border flex gap-3 items-center`
-                  )}
-                >
-                  <div
-                    className={cn(
-                      `h-11 w-11 rounded-full bg-[#372556] text-purple-300 flex items-center justify-center`,
-                      index === 0 && "bg-[#202E55] text-blue-300"
-                    )}
-                  >
-                    {index === 0 ? (
-                      <CodeXml size={30} />
-                    ) : (
-                      <Package2Icon size={30} />
-                    )}
-                  </div>
-                  <div
-                    className={cn(
-                      `text-2xl font-bold text-purple-400 `,
-                      index === 0 && "text-blue-400"
-                    )}
-                  >
-                    {stat.number}
-                    <p className="text-sm text-gray-400">{stat.label}</p>
-                  </div>
+              <div
+                className={`glass-card p-4 rounded-xl space-y-1 hover:border-purple-400/50 hover:border flex gap-3 items-center`}
+              >
+                <div className="h-11 w-11 rounded-full flex items-center justify-center bg-[#202E55] text-blue-300">
+                  <CodeXml size={30} />
                 </div>
-              ))}
+                <div className="text-2xl font-bold text-blue-400">
+                  {project.technologies.length}{" "}
+                  <p className="text-sm text-gray-400">Total Technology</p>
+                </div>
+              </div>
+
+              {/*  */}
+              <div
+                className={cn(
+                  `glass-card p-4 rounded-xl space-y-1 hover:border-purple-400/50 hover:border flex gap-3 items-center`
+                )}
+              >
+                <div className="h-11 w-11 rounded-full bg-[#372556] text-purple-300 flex items-center justify-center">
+                  <CodeXml size={30} />
+                </div>
+                <div className="text-2xl font-bold text-purple-400 ">
+                  {project.keyFeatures.length}
+                  <p className="text-sm text-gray-400">Key Features</p>
+                </div>
+              </div>
             </div>
 
             {/* Action Buttons */}
@@ -129,7 +126,7 @@ export default function ProjectDetailsPage({
                 className="bg-purple-500 hover:bg-purple-600 text-white p-6"
               >
                 <Link
-                  href={projectData.demoUrl}
+                  href={project.demoUrl}
                   className="inline-flex items-center gap-2"
                 >
                   <ExternalLink className="w-4 h-4" />
@@ -142,7 +139,7 @@ export default function ProjectDetailsPage({
                 className="bg-white/5 hover:bg-white/10 text-pink-200 hover:text-white p-6"
               >
                 <Link
-                  href={projectData.githubUrl}
+                  href={project.githubUrl}
                   className="inline-flex items-center gap-2"
                 >
                   <Github className="w-4 h-4" />
@@ -155,7 +152,7 @@ export default function ProjectDetailsPage({
             <div className="space-y-4">
               <h2 className="text-xl font-semibold">Technologies Used</h2>
               <div className="flex flex-wrap gap-2">
-                {projectData.technologies.map((tech) => (
+                {project.technologies.map((tech) => (
                   <div
                     key={tech}
                     // variant="outline"
@@ -179,9 +176,9 @@ export default function ProjectDetailsPage({
             {/* Project Image */}
             <div className="relative aspect-video rounded-xl overflow-hidden glass-card p-1">
               <Image
-                src={projectData.image || "/placeholder.svg"}
-                alt={projectData.title}
-                className={`w-full h-full object-cover rounded-lg transition-opacity duration-300 ${
+                src={project.image || "/placeholder.svg"}
+                alt={project.title}
+                className={`w-full h-full object-cover rounded-lg hover:scale-110  ease-in-out  transition-transform duration-300 ${
                   isImageLoading ? "opacity-0" : "opacity-100"
                 }`}
                 width={1200}
@@ -205,7 +202,7 @@ export default function ProjectDetailsPage({
               </CardHeader>
               <CardContent>
                 <ul className="space-y-4 ">
-                  {projectData.keyFeatures.map((feature, index) => (
+                  {project.keyFeatures.map((feature, index) => (
                     <motion.li
                       key={index}
                       initial={{ opacity: 0, x: 20 }}

@@ -87,57 +87,49 @@ interface Project {
 const projects: Project[] = [
   {
     id: 1,
-    title: "Aritmatika Solver",
+    title: "Ominifood",
     description:
-      "Program ini dirancang untuk mempermudah pengguna dalam menyelesaikan soal-soal Aritmatika secara otomatis dengan...",
-    image: "/22.jpg",
-    demoUrl: "#",
-    detailsUrl: "#",
+      "Ominifood is a web platform designed to make it easy for users to order and enjoy high-quality meals effortlessly. With an efficient system, customers can browse various menus, place orders, and receive delicious food quickly.",
+    image: "/project1.png",
+    demoUrl: "https://legend4tech.github.io/Legends-Ominifood-WebProject/",
+    detailsUrl: "/projects/1",
   },
   {
     id: 2,
-    title: "AutoChat-Discord",
+    title: "Fast React Pizza",
     description:
-      "AutoChat adalah solusi otomatisasi untuk mengelola pesan ke seluruh Discord secara terkelola. Pengguna dapat...",
-    image: "/placeholder.svg?height=400&width=600",
-    demoUrl: "#",
-    detailsUrl: "#",
+      "Fast Pizza App is a React-based pizza ordering platform that allows users to browse a dynamic menu, add pizzas to their cart, and place orders seamlessly. With a simple checkout process and an option for priority delivery, it ensures a fast and convenient pizza ordering experience. 🍕🚀",
+    image: "/project2.png",
+    demoUrl: "https://legends-fast-pizza-app.vercel.app/",
+    detailsUrl: "/projects/2",
   },
   {
     id: 3,
-    title: "Buku Catatan",
+    title: "The React Quiz",
     description:
-      "Buku Catatan adalah website yang memungkinkan pengguna untuk membuat, menyimpan, dan mengelola catatan secara...",
-    image: "/placeholder.svg?height=400&width=600",
-    demoUrl: "#",
-    detailsUrl: "#",
+      "React Quiz App is a fun and interactive quiz platform built with React, allowing users to test their knowledge on various topics. With multiple-choice questions, score tracking, and an intuitive interface, it provides an engaging learning experience. 🚀🧠",
+    image: "/project3.png",
+    demoUrl: "https://legends-react-quiz.vercel.app/",
+    detailsUrl: "/projects/3",
   },
   {
     id: 4,
-    title: "Growtopia-Calculator",
+    title: "Brainwave",
     description:
-      "Growtopia Surgery Shop Calculator membantu pemain dalam menghitung keuntungan dari...",
-    image: "/placeholder.svg?height=400&width=600",
-    demoUrl: "#",
-    detailsUrl: "#",
+      "Brainwave is a cutting-edge website that exemplifies modern UI/UX principles, developed using React.js and Tailwind CSS. With its sleek design, smooth animations, and highly optimized user experience, it sets a high standard for modern web applications. Whether you're looking for inspiration or a reference for your next project, Brainwave serves as a solid example of how to implement stunning and interactive web designs.",
+    image: "/project4.png",
+    demoUrl: "https://brainwave-orpin-delta.vercel.app/",
+    detailsUrl: "/projects/4",
   },
   {
     id: 5,
-    title: "IT Support Bekasi",
+    title: "HotelEase",
     description:
-      "Website IT Support Bekasi adalah proyek yang saya buat dan website ini digunakan untuk...",
-    image: "/placeholder.svg?height=400&width=600",
-    demoUrl: "#",
-    detailsUrl: "#",
-  },
-  {
-    id: 6,
-    title: "Portfolio-V4",
-    description:
-      "Website Portfolio-v4 adalah versi sebelumnya dari website ini yang saya buat menggunakan...",
-    image: "/placeholder.svg?height=400&width=600",
-    demoUrl: "#",
-    detailsUrl: "#",
+      "HotelEase is a comprehensive web application designed for hotel employees to efficiently manage cabins, bookings, and guest information. The app ensures streamlined operations for hotel staff by providing features like cabin management, booking handling, and guest data updates, with a focus on ease of use and security.",
+
+    image: "/project5.png",
+    demoUrl: "https://hotel-ease.vercel.app/",
+    detailsUrl: "/projects/5",
   },
 ];
 
@@ -174,7 +166,8 @@ const TechStackCategory = ({ category, items }) => {
               <Image
                 src={tech.icon}
                 alt={tech.name}
-                layout="fill"
+                width={48}
+                height={48}
                 objectFit="contain"
               />
             </div>
@@ -277,10 +270,12 @@ export function Portfolio() {
                 >
                   <div className="relative aspect-video">
                     <Image
-                      src={project.image || "/placeholder.svg"}
+                      src={project.image}
                       alt={project.title}
-                      layout="fill"
+                      width={600}
+                      height={400}
                       objectFit="cover"
+                      className="hover:scale-110 transition-transform duration-300 ease-in-out h-full"
                     />
                   </div>
                   <div className="p-6 space-y-4">
@@ -289,18 +284,18 @@ export function Portfolio() {
                       {project.description}
                     </p>
                     <div className="flex justify-between items-center">
-                      <a
+                      <Link
                         href={project.demoUrl}
                         className="text-purple-400 hover:text-purple-300 text-sm flex items-center gap-2"
                       >
                         Live Demo <ExternalLink className="w-4 h-4" />
-                      </a>
-                      <a
+                      </Link>
+                      <Link
                         href={project.detailsUrl}
                         className="text-purple-400 hover:text-purple-300 text-sm flex items-center gap-2"
                       >
                         Details <ExternalLink className="w-4 h-4" />
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </motion.div>
@@ -338,8 +333,10 @@ export function Portfolio() {
                     <Image
                       src={cert.image}
                       alt={cert.title}
-                      layout="fill"
+                      width={400}
+                      height={300}
                       objectFit="cover"
+                      className="hover:scale-110 transition-transform duration-300 ease-in-out"
                     />
                   </div>
                   <div className="p-6 space-y-2">

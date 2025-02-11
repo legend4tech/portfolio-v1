@@ -116,10 +116,12 @@ export function About() {
               </button>
 
               {/* View Projects Button */}
-              <button className="flex items-center gap-2 glass-card hover:bg-white/10 transition-colors px-6 py-3 rounded-full">
-                <ExternalLink className="w-4 h-4" />
-                View Projects
-              </button>
+              <a href="#portfolio">
+                <button className="flex items-center gap-2 glass-card hover:bg-white/10 transition-colors px-6 py-3 rounded-full">
+                  <ExternalLink className="w-4 h-4" />
+                  View Projects
+                </button>
+              </a>
             </motion.div>
           </motion.div>
 
@@ -141,6 +143,7 @@ export function About() {
                   height={400}
                   className="w-full h-full object-cover relative z-10 hover:scale-110 transition-transform duration-300 ease-in-out"
                 />
+                
               </div>
             </div>
           </motion.div>
