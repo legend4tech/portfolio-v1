@@ -6,9 +6,10 @@ import { ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Certificate, Project, TechCategory } from "@/lib/schema";
 
 // Tech stack data
-const techStack = [
+const techStack: TechCategory[] = [
   {
     category: "Frontend",
     items: [
@@ -44,7 +45,7 @@ const techStack = [
 ];
 
 // Certificate data
-const certificates = [
+const certificates: Certificate[] = [
   {
     id: 1,
     title: "HTML and CSS Course",
@@ -72,16 +73,6 @@ const certificates = [
   },
   // Add more certificates as needed
 ];
-
-// Projects type definition
-interface Project {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  demoUrl: string;
-  detailsUrl: string;
-}
 
 // Sample projects data
 const projects: Project[] = [
@@ -134,7 +125,7 @@ const projects: Project[] = [
 ];
 
 // New component for tech stack category
-const TechStackCategory = ({ category, items }) => {
+const TechStackCategory = ({ category, items }: TechCategory) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const displayedItems = isExpanded ? items : items.slice(0, 6);
 

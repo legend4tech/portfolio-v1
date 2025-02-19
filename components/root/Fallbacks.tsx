@@ -16,7 +16,8 @@ export function ProjectNotFound() {
         </CardHeader>
         <CardContent>
           <p className="text-gray-400 mb-4">
-            Sorry, we couldn't find the project Details you're looking for.
+            Sorry, we couldn&lsquo;t find the project Details you&lsquo;re
+            looking for.
           </p>
           <Button
             asChild

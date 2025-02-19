@@ -1,7 +1,7 @@
 "use client";
 
 import { LoaderCircle, MessageSquare, AlertTriangle } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { useComments } from "@/hooks/useComments";
 import RelativeTime from "@/components/RelativeTime";
@@ -58,7 +58,7 @@ function AllComments() {
             <CardContent className="p-4">
               <div className="flex items-start gap-3 p-4 rounded-lg bg-gray-800 shadow-md">
                 <Avatar className="flex-shrink-0">
-                  <AvatarImage src={comment.avatar} alt={comment.name} />
+                  {/* <AvatarImage src={comment.avatar} alt={comment.name} /> */}
                   <AvatarFallback>
                     {comment.name[0].toUpperCase()}
                   </AvatarFallback>

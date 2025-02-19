@@ -1,5 +1,33 @@
 import * as z from "zod";
 
+export interface TechItem {
+  name: string;
+  icon: string;
+}
+
+export interface TechCategory {
+  category: string;
+  items: TechItem[];
+}
+
+export interface Certificate {
+  id: number;
+  title: string;
+  issuer: string;
+  date: string;
+  image: string;
+  href: string;
+}
+
+export interface Project {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  demoUrl: string;
+  detailsUrl: string;
+}
+
 export const contactFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
