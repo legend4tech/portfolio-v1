@@ -143,7 +143,6 @@ export function About() {
                   height={400}
                   className="w-full h-full object-cover relative z-10 hover:scale-110 transition-transform duration-300 ease-in-out"
                 />
-                
               </div>
             </div>
           </motion.div>

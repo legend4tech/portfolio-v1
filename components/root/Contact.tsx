@@ -26,6 +26,8 @@ import {
   type ContactFormValues,
   type CommentFormValues,
 } from "@/lib/schema";
+import AllComments from "./AllComments";
+import { useAddComment } from "@/hooks/useAddComment";
 
 // Updated social links data with full-width flag
 const socialLinks = [
@@ -48,30 +50,6 @@ const socialLinks = [
 ];
 
 // Sample comments
-const comments = [
-  {
-    id: 1,
-    name: "Karthik",
-    message:
-      "Hi! Sir it is beautiful, what was the frame work u used, how to set the message box??",
-    avatar: "/placeholder.svg?height=40&width=40",
-    timeAgo: "3m ago",
-  },
-  {
-    id: 2,
-    name: "Karthik",
-    message: "Hi, it is very amazing nice portfolio.",
-    avatar: "/placeholder.svg?height=40&width=40",
-    timeAgo: "4m ago",
-  },
-  {
-    id: 3,
-    name: "yuda",
-    message: "keren",
-    avatar: "/placeholder.svg?height=40&width=40",
-    timeAgo: "14m ago",
-  },
-];
 
 export function Contact() {
   // Contact form
@@ -96,6 +74,9 @@ export function Contact() {
   // File state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [charCount, setCharCount] = useState(0);
+
+  const { mutate: addComment, isPending: isAddingComment } = useAddComment();
 
   // Animation controls
   const [ref, inView] = useInView({
@@ -109,7 +90,17 @@ export function Contact() {
   };
 
   const onCommentSubmit = async (data: CommentFormValues) => {
-    console.log("Comment:", data);
+    addComment(data, {
+      onSuccess: () => {
+        commentForm.reset();
+        setSelectedFile(null);
+        setImagePreview(null);
+        if (document.getElementById("photo-upload")) {
+          (document.getElementById("photo-upload") as HTMLInputElement).value =
+            "";
+        }
+      },
+    });
   };
 
   useEffect(() => {
@@ -310,11 +301,21 @@ export function Contact() {
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
-                            <Textarea
-                              placeholder="Write your message here..."
-                              className="glass-input min-h-[100px] resize-none"
-                              {...field}
-                            />
+                            <div className="relative">
+                              <Textarea
+                                placeholder="Write your message here..."
+                                className="glass-input min-h-[120px] resize-none pr-16 comments-scroll"
+                                maxLength={500}
+                                {...field}
+                                onChange={(e) => {
+                                  field.onChange(e);
+                                  setCharCount(e.target.value.length);
+                                }}
+                              />
+                              <div className="absolute bottom-2 right-2 text-sm text-gray-400">
+                                {charCount}/500
+                              </div>
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -403,56 +404,15 @@ export function Contact() {
                     <Button
                       type="submit"
                       className="w-full bg-purple-500 hover:bg-purple-600 focus:ring-2 focus:ring-purple-500/50"
+                      disabled={isAddingComment}
                     >
-                      Post Comment
+                      {isAddingComment ? "Posting" : "Post Comment"}
                     </Button>
                   </form>
                 </Form>
 
                 {/* Comments List with Scroll and Empty State */}
-                <div className="h-[400px] overflow-y-auto comments-scroll ">
-                  {comments.length > 0 ? (
-                    <div className="space-y-4">
-                      {comments.map((comment) => (
-                        <Card key={comment.id} className="glass-card">
-                          <CardContent className="p-4">
-                            <div className="flex items-start gap-3">
-                              <Avatar>
-                                <AvatarImage
-                                  src={comment.avatar}
-                                  alt={comment.name}
-                                />
-                                <AvatarFallback>
-                                  {comment.name[0]}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1">
-                                <div className="flex justify-between items-center mb-2">
-                                  <h4 className="font-semibold text-white">
-                                    {comment.name}
-                                  </h4>
-                                  <span className="text-sm text-gray-400">
-                                    {comment.timeAgo}
-                                  </span>
-                                </div>
-                                <p className="text-gray-300">
-                                  {comment.message}
-                                </p>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
-                      <MessageSquare className="w-12 h-12 text-gray-500" />
-                      <p className="text-gray-400">
-                        No comments yet. Be the first to comment!
-                      </p>
-                    </div>
-                  )}
-                </div>
+                <AllComments />
               </CardContent>
             </Card>
           </motion.div>

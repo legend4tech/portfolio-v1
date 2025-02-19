@@ -1,9 +1,9 @@
 "use client";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 import { motion } from "framer-motion";
 import { ExternalLink, Sparkles } from "lucide-react";
 import { Typewriter } from "react-simple-typewriter";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 export function Hero() {
   return (
@@ -94,7 +94,7 @@ export function Hero() {
             className="relative w-full aspect-square max-w-2xl mx-auto"
           >
             <DotLottieReact
-              src="https://lottie.host/d35da9a7-96ed-4f5a-9916-f6bb3fdb84f5/qwazBY4n6Z.lottie"
+              src="https://lottie.host/d0a6bb3e-535f-400d-a51b-951722e46039/QoXZDuIib0.lottie"
               loop
               autoplay
               className="w-full h-full"

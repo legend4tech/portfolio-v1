@@ -9,6 +9,7 @@ import {
   CodeXml,
   ExternalLink,
   Github,
+  Layers,
   Package,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -92,12 +93,12 @@ export default function ProjectDetailsPage({ id }: { id: string }) {
             {/* Stats */}
             <div className="grid grid-cols-2 gap-4">
               <div
-                className={`glass-card p-4 rounded-xl space-y-1 hover:border-purple-400/50 hover:border flex gap-3 items-center`}
+                className={`glass-card p-4 rounded-xl space-y-1 hover:border-purple-400/50 hover:border flex flex-col xs:flex-row xs:gap-3  items-center`}
               >
                 <div className="h-11 w-11 rounded-full flex items-center justify-center bg-[#202E55] text-blue-300">
                   <CodeXml size={30} />
                 </div>
-                <div className="text-2xl font-bold text-blue-400">
+                <div className="text-2xl font-bold text-blue-400 text-center xs:text-left">
                   {project.technologies.length}{" "}
                   <p className="text-sm text-gray-400">Total Technology</p>
                 </div>
@@ -106,13 +107,13 @@ export default function ProjectDetailsPage({ id }: { id: string }) {
               {/*  */}
               <div
                 className={cn(
-                  `glass-card p-4 rounded-xl space-y-1 hover:border-purple-400/50 hover:border flex gap-3 items-center`
+                  `glass-card p-4 rounded-xl space-y-1 hover:border-purple-400/50 hover:border flex flex-col xs:flex-row xs:gap-3 items-center`
                 )}
               >
                 <div className="h-11 w-11 rounded-full bg-[#372556] text-purple-300 flex items-center justify-center">
-                  <CodeXml size={30} />
+                  <Layers size={30} />
                 </div>
-                <div className="text-2xl font-bold text-purple-400 ">
+                <div className="text-2xl font-bold text-purple-400 text-center xs:text-left">
                   {project.keyFeatures.length}
                   <p className="text-sm text-gray-400">Key Features</p>
                 </div>
