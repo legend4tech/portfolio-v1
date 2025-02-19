@@ -4,7 +4,7 @@ import { CommentFormValues } from "@/lib/schema";
 import { MongoClient } from "mongodb";
 
 // Initialize MongoDB client
-const mongoClient = new MongoClient(process.env.MONGODB_URI as string);
+const mongoClient = new MongoClient(process.env.MONGODB_URL as string);
 
 let dbConnection: Promise<MongoClient> | null = null;
 
