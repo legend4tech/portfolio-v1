@@ -75,7 +75,7 @@ function AllComments() {
                       // className="text-xs text-gray-400 flex-shrink-0"
                     />
                   </div>
-                  <p className="text-gray-300 break-words whitespace-pre-wrap text-lg">
+                  <p className="text-gray-300 break-all whitespace-pre-wrap text-lg">
                     {comment.message}
                   </p>
                 </div>
