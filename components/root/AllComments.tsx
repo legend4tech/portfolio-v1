@@ -1,7 +1,7 @@
 "use client";
 
-import { LoaderCircle, MessageSquare, AlertTriangle } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { MessageSquare, AlertTriangle } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { useComments } from "@/hooks/useComments";
 import RelativeTime from "@/components/RelativeTime";
@@ -13,9 +13,15 @@ function AllComments() {
   // Loading state
   if (isPending) {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
-        <LoaderCircle className="w-12 h-12 text-purple-500 animate-spin" />
-        <p className="text-gray-400">Loading Comments...</p>
+      <div className="comments-container space-y-4">
+        {/* <div className="text-center space-y-2">
+          <Loader2 className="w-12 h-12 text-purple-500 animate-spin mx-auto" />
+          <h3 className="text-xl font-bold text-purple-400">Loading Comments</h3>
+          <p className="text-gray-400">Fetching the latest conversations...</p>
+        </div> */}
+        {[...Array(3)].map((_, index) => (
+          <CommentSkeleton key={index} />
+        ))}
       </div>
     );
   }
@@ -54,11 +60,11 @@ function AllComments() {
     <div className="h-[400px] overflow-y-auto comments-scroll">
       <div className="space-y-4">
         {comments.map((comment) => (
-          <Card key={comment.id} className="glass-card">
+          <Card key={comment.id} className="glass-card ">
             <CardContent className="p-4">
               <div className="flex items-start gap-3 p-4 rounded-lg bg-gray-800 shadow-md">
                 <Avatar className="flex-shrink-0">
-                  {/* <AvatarImage src={comment.avatar} alt={comment.name} /> */}
+                  <AvatarImage src={comment.fileUrl} alt={comment.name} />
                   <AvatarFallback>
                     {comment.name[0].toUpperCase()}
                   </AvatarFallback>
@@ -87,5 +93,24 @@ function AllComments() {
     </div>
   );
 }
+
+// Loading skeleton component
+const CommentSkeleton = () => (
+  <div className="comment-card glass-card mb-4 overflow-hidden animate-pulse">
+    <div className="comment-header flex items-center justify-between p-4 bg-gray-700/30">
+      <div className="flex items-center space-x-3">
+        <div className="w-10 h-10 bg-gray-600 rounded-full" />
+        <div className="h-4 bg-gray-600 rounded w-24" />
+      </div>
+      <div className="h-3 bg-gray-600 rounded w-16" />
+    </div>
+    <div className="comment-body p-4 bg-gray-800/30">
+      <div className="space-y-2">
+        <div className="h-3 bg-gray-700 rounded w-full" />
+        <div className="h-3 bg-gray-700 rounded w-5/6" />
+      </div>
+    </div>
+  </div>
+);
 
 export default AllComments;
