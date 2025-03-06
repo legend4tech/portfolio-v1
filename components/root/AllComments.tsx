@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useComments } from "@/hooks/useComments";
 import RelativeTime from "@/components/RelativeTime";
 import { Button } from "@/components/ui/button";
+import { CommentTypes } from "@/types/commentTypes";
 
 function AllComments() {
   const { data: comments, isPending, isError, refetch } = useComments();
@@ -59,12 +60,15 @@ function AllComments() {
   return (
     <div className="h-[400px] overflow-y-auto comments-scroll">
       <div className="space-y-4">
-        {comments.map((comment) => (
-          <Card key={comment.id} className="glass-card ">
+        {comments.map((comment: CommentTypes) => (
+          <Card key={comment._id} className="glass-card ">
             <CardContent className="p-4">
               <div className="flex items-start gap-3 p-4 rounded-lg bg-gray-800 shadow-md">
                 <Avatar className="flex-shrink-0">
-                  <AvatarImage src={comment.fileUrl} alt={comment.name} />
+                  <AvatarImage
+                    src={comment.avatar ?? undefined}
+                    alt={comment.name}
+                  />
                   <AvatarFallback>
                     {comment.name[0].toUpperCase()}
                   </AvatarFallback>

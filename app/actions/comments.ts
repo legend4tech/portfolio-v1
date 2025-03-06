@@ -1,6 +1,7 @@
 "use server";
 
 import { uploadFileToS3 } from "@/lib/uploadFileToS3";
+import { CommentDocument, CommentTypes } from "@/types/commentTypes";
 import { MongoClient } from "mongodb";
 
 // Initialize MongoDB client
@@ -26,9 +27,9 @@ export async function addComment(formData: FormData) {
     const file = formData.get("file") as File | null;
 
     // 2. Upload file to S3 if it exists
-    let fileUrl = null;
+    let avatar = null;
     if (file && file.size > 0) {
-      fileUrl = await uploadFileToS3(file);
+      avatar = await uploadFileToS3(file);
     }
 
     // 3. Save data to MongoDB
@@ -40,7 +41,7 @@ export async function addComment(formData: FormData) {
       name,
       message,
       time_posted: new Date().toISOString(),
-      fileUrl,
+      avatar,
     };
 
     // Insert comment into MongoDB
@@ -57,19 +58,24 @@ export async function addComment(formData: FormData) {
 }
 
 // Fetch all comments from the database.
-export async function getComments() {
+export async function getComments(): Promise<CommentTypes[]> {
   try {
     const db = await connectToDatabase();
-    const comment_section = db.collection("comment_section");
+    const comment_section = db.collection<CommentDocument>("comment_section");
     const comments = await comment_section
       .find({})
       .sort({ time_posted: -1 })
       .toArray();
 
-    return comments.map((comment) => ({
-      ...comment,
-      _id: comment._id.toString(),
-    }));
+    return comments.map(
+      (comment): CommentTypes => ({
+        _id: comment._id.toString(),
+        name: comment.name,
+        message: comment.message,
+        time_posted: comment.time_posted,
+        avatar: comment.avatar,
+      })
+    );
   } catch (error) {
     console.error("Error fetching comments:", error);
     throw new Error(
