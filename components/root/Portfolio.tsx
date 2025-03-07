@@ -6,7 +6,7 @@ import { ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Certificate, Project, TechCategory } from "@/lib/schema";
+import { Certificate, Project, TechCategory } from "@/types/portfolioTypes";
 
 // Tech stack data
 const techStack: TechCategory[] = [
