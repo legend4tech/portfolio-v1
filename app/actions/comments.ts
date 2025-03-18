@@ -1,8 +1,9 @@
 "use server";
 
 import { uploadFileToS3 } from "@/lib/uploadFileToS3";
-import { CommentDocument, CommentTypes } from "@/types/commentTypes";
+import type { CommentDocument, CommentTypes } from "@/types/commentTypes";
 import { MongoClient } from "mongodb";
+import { revalidatePath } from "next/cache";
 
 // Initialize MongoDB client
 const mongoClient = new MongoClient(process.env.MONGODB_URL as string);
@@ -29,6 +30,7 @@ export async function addComment(formData: FormData) {
     // 2. Upload file to S3 if it exists
     let avatar = null;
     if (file && file.size > 0) {
+      // The uploadFileToS3 function now uses the API route
       avatar = await uploadFileToS3(file);
     }
 
@@ -46,6 +48,10 @@ export async function addComment(formData: FormData) {
 
     // Insert comment into MongoDB
     const result = await comment_section.insertOne(comment);
+
+    // Revalidate the path to ensure fresh data
+    // revalidatePath("/")
+
     return { ...comment, _id: result.insertedId.toString() };
   } catch (error) {
     console.error("Error adding comment:", error);
