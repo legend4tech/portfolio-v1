@@ -3,7 +3,6 @@
 import { uploadFileToS3 } from "@/lib/uploadFileToS3";
 import type { CommentDocument, CommentTypes } from "@/types/commentTypes";
 import { MongoClient } from "mongodb";
-import { revalidatePath } from "next/cache";
 
 // Initialize MongoDB client
 const mongoClient = new MongoClient(process.env.MONGODB_URL as string);
