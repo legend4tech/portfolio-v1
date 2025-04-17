@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { Send } from "lucide-react";
+import { Send, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
@@ -17,8 +17,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { contactFormSchema, type ContactFormValues } from "@/lib/schema";
+import { useSendEmail } from "@/hooks/use-send-email";
 
-// Updated social links data with full-width flag
+// Social links data with full-width flag
 const socialLinks = [
   {
     name: "Let's Connect",
@@ -48,8 +49,15 @@ export function ContactForm() {
     },
   });
 
+  const { mutate: sendEmail, isPending } = useSendEmail();
+
   const onContactSubmit = async (data: ContactFormValues) => {
-    console.log("Contact form:", data);
+    sendEmail(data, {
+      onSuccess: () => {
+        // Reset form after successful submission
+        contactForm.reset();
+      },
+    });
   };
 
   return (
@@ -60,7 +68,7 @@ export function ContactForm() {
       className="space-y-8"
     >
       {/* Get in Touch Form */}
-      <Card className="glass-card  bg-white/5">
+      <Card className="glass-card bg-white/5">
         <CardHeader>
           <CardTitle className="text-xl font-semibold text-purple-400">
             Get in Touch
@@ -124,9 +132,19 @@ export function ContactForm() {
               <Button
                 type="submit"
                 className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90"
+                disabled={isPending}
               >
-                Send Message
-                <Send className="w-4 h-4 ml-2" />
+                {isPending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    Send Message
+                    <Send className="w-4 h-4 ml-2" />
+                  </>
+                )}
               </Button>
             </form>
           </Form>

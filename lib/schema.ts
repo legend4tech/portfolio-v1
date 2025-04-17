@@ -22,9 +22,13 @@ export const commentFormSchema = z.object({
 
 // Define the ContactFormValues schema
 export const contactFormSchema = z.object({
-  name: z.string().min(1, { message: "Name is required" }), // Name must be a non-empty string
-  message: z.string().min(1, { message: "Message is required" }), // Message must be a non-empty string
-  email: z.string().email({ message: "Invalid email address" }), // Email must be a valid email format
+  name: z.string().min(1, "Name is required"), // Name must be a non-empty string
+  message: z
+    .string()
+    .min(10, "Message must be up to 10 characters")
+    .max(500, "Message must be less than 500 characters"),
+  email: z.string().email({ message: "Invalid email address" }),
+  // Email must be a valid email format
 });
 
 export type CommentFormValues = z.infer<typeof commentFormSchema>;
