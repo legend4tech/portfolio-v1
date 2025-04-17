@@ -39,9 +39,9 @@ export async function POST(request: Request) {
     await s3Client.send(command);
 
     // Use the correct URL format for S3
-    const fileUrl = `https://s3.${process.env.AWS_REGION}.amazonaws.com/${process.env.AWS_S3_BUCKET_NAME}/${uniqueFileName}`;
+    const fileUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${process.env.AWS_S3_BUCKET_NAME}/${uniqueFileName}`;
 
-    return NextResponse.json({ success: true, fileUrl });
+    https: return NextResponse.json({ success: true, fileUrl });
   } catch (error) {
     console.error("Error uploading to S3:", error);
     return NextResponse.json(
