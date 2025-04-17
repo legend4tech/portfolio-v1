@@ -1,6 +1,5 @@
 "use server";
 
-import { uploadFileToS3 } from "@/lib/uploadFileToS3";
 import type { CommentDocument, CommentTypes } from "@/types/commentTypes";
 import { MongoClient } from "mongodb";
 
@@ -24,16 +23,16 @@ export async function addComment(formData: FormData) {
     // 1. Extract data from FormData
     const name = formData.get("name") as string;
     const message = formData.get("message") as string;
-    const file = formData.get("file") as File | null;
+    const avatar = (formData.get("avatar") as string) || null;
 
-    // 2. Upload file to S3 if it exists
-    let avatar = null;
-    if (file && file.size > 0) {
-      // The uploadFileToS3 function now uses the API route
-      avatar = await uploadFileToS3(file);
-    }
+    // Debug log to check what we're receiving
+    console.log("Received form data:", {
+      name,
+      message,
+      avatar: avatar ? "Avatar URL received" : "No avatar",
+    });
 
-    // 3. Save data to MongoDB
+    // 2. Save data to MongoDB
     const db = await connectToDatabase();
     const comment_section = db.collection("comment_section");
 
@@ -48,16 +47,11 @@ export async function addComment(formData: FormData) {
     // Insert comment into MongoDB
     const result = await comment_section.insertOne(comment);
 
-    // Revalidate the path to ensure fresh data
-    // revalidatePath("/")
-
     return { ...comment, _id: result.insertedId.toString() };
   } catch (error) {
     console.error("Error adding comment:", error);
     throw new Error(
-      `Error adding comment: ${
-        error instanceof Error ? error.message : String(error)
-      }`
+      `Error adding comment: ${error instanceof Error ? error.message : String(error)}`
     );
   }
 }
@@ -84,9 +78,7 @@ export async function getComments(): Promise<CommentTypes[]> {
   } catch (error) {
     console.error("Error fetching comments:", error);
     throw new Error(
-      `Error fetching comments: ${
-        error instanceof Error ? error.message : String(error)
-      }`
+      `Error fetching comments: ${error instanceof Error ? error.message : String(error)}`
     );
   }
 }
