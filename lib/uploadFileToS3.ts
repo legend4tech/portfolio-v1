@@ -9,7 +9,7 @@ export async function uploadFileToS3(file: File): Promise<string> {
       : process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
     // Make sure the URL is properly formatted
-    const apiUrl = `${baseUrl}/api/upload`;
+    const apiUrl = `${baseUrl}/api/public-upload`;
     console.log("Uploading to:", apiUrl); // Debug log
 
     const response = await fetch(apiUrl, {
