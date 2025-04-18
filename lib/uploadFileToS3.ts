@@ -3,15 +3,9 @@
  */
 export async function uploadFileToS3(file: File): Promise<string> {
   try {
-    // Get the base URL properly for all environments
-    const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-      : process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-
-    // Make sure the URL is properly formatted with https if needed
-    const apiUrl = baseUrl.startsWith("http")
-      ? `${baseUrl}/api/upload`
-      : `https://${baseUrl}/api/upload`;
+    // In production, we need to use the absolute URL with https
+    // This is a more reliable way to construct the API URL in Vercel
+    const apiUrl = "/api/upload";
     console.log("Uploading to:", apiUrl);
 
     // Create FormData and append the file

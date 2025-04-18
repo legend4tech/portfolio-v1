@@ -2,23 +2,38 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
 import { NextResponse } from "next/server";
 
-// Initialize S3 client
-const s3Client = new S3Client({
-  region: process.env.AWS_REGION as string,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY as string,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
-  },
-});
-
 export async function POST(request: Request) {
   try {
+    // Log environment variables (redacted for security)
+    console.log("AWS Region:", process.env.AWS_REGION ? "Set" : "Not set");
+    console.log(
+      "AWS Access Key:",
+      process.env.AWS_ACCESS_KEY ? "Set" : "Not set"
+    );
+    console.log(
+      "AWS Secret Key:",
+      process.env.AWS_SECRET_ACCESS_KEY ? "Set" : "Not set"
+    );
+    console.log(
+      "S3 Bucket Name:",
+      process.env.AWS_S3_BUCKET_NAME ? "Set" : "Not set"
+    );
+
     const formData = await request.formData();
     const file = formData.get("file") as File;
 
     if (!file || file.size === 0) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
+
+    // Initialize S3 client
+    const s3Client = new S3Client({
+      region: process.env.AWS_REGION as string,
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY as string,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
+      },
+    });
 
     // Generate a unique filename
     const fileExtension = file.name.split(".").pop() || "";
@@ -34,17 +49,27 @@ export async function POST(request: Request) {
       Key: uniqueFileName,
       Body: buffer,
       ContentType: file.type,
-      // No ACL parameter
     });
 
-    await s3Client.send(command);
+    try {
+      await s3Client.send(command);
+      console.log("Successfully uploaded to S3");
+    } catch (s3Error) {
+      console.error("S3 Upload Error:", s3Error);
+      return NextResponse.json(
+        {
+          error: `S3 upload failed: ${s3Error instanceof Error ? s3Error.message : String(s3Error)}`,
+        },
+        { status: 500 }
+      );
+    }
 
     // Calculate the final URL where the file will be accessible
     const fileUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${uniqueFileName}`;
 
     return NextResponse.json({ success: true, fileUrl });
   } catch (error) {
-    console.error("Error uploading to S3:", error);
+    console.error("Error in upload API route:", error);
     return NextResponse.json(
       {
         error: `Failed to upload file: ${error instanceof Error ? error.message : String(error)}`,
