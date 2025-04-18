@@ -4,21 +4,6 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    // Log environment variables (redacted for security)
-    console.log("AWS Region:", process.env.AWS_REGION ? "Set" : "Not set");
-    console.log(
-      "AWS Access Key:",
-      process.env.MY_AWS_ACCESS_KEY ? "Set" : "Not set"
-    );
-    console.log(
-      "AWS Secret Key:",
-      process.env.AWS_SECRET_ACCESS_KEY ? "Set" : "Not set"
-    );
-    console.log(
-      "S3 Bucket Name:",
-      process.env.AWS_S3_BUCKET_NAME ? "Set" : "Not set"
-    );
-
     const formData = await request.formData();
     const file = formData.get("file") as File;
 
@@ -53,8 +38,9 @@ export async function POST(request: Request) {
 
     try {
       await s3Client.send(command);
-      console.log("Successfully uploaded to S3");
+      // Removed success log
     } catch (s3Error) {
+      // Keep error logging for production troubleshooting
       console.error("S3 Upload Error:", s3Error);
       return NextResponse.json(
         {
@@ -69,6 +55,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, fileUrl });
   } catch (error) {
+    // Keep error logging for production troubleshooting
     console.error("Error in upload API route:", error);
     return NextResponse.json(
       {

@@ -10,9 +10,8 @@ let dbConnection: Promise<MongoClient> | null = null;
 
 async function connectToDatabase() {
   if (!dbConnection) {
-    console.log("Connecting to MongoDB...");
+    // Keep minimal connection logging
     dbConnection = mongoClient.connect();
-    console.log("Connected to MongoDB!");
   }
   return (await dbConnection).db(process.env.MONGODB_DB);
 }
@@ -24,13 +23,6 @@ export async function addComment(formData: FormData) {
     const name = formData.get("name") as string;
     const message = formData.get("message") as string;
     const avatar = (formData.get("avatar") as string) || null;
-
-    // Debug log to check what we're receiving
-    console.log("Received form data:", {
-      name,
-      message,
-      avatar: avatar ? "Avatar URL received" : "No avatar",
-    });
 
     // 2. Save data to MongoDB
     const db = await connectToDatabase();
@@ -49,6 +41,7 @@ export async function addComment(formData: FormData) {
 
     return { ...comment, _id: result.insertedId.toString() };
   } catch (error) {
+    // Keep error logging for production troubleshooting
     console.error("Error adding comment:", error);
     throw new Error(
       `Error adding comment: ${error instanceof Error ? error.message : String(error)}`
