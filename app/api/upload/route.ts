@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     console.log("AWS Region:", process.env.AWS_REGION ? "Set" : "Not set");
     console.log(
       "AWS Access Key:",
-      process.env.AWS_ACCESS_KEY ? "Set" : "Not set"
+      process.env.MY_AWS_ACCESS_KEY ? "Set" : "Not set"
     );
     console.log(
       "AWS Secret Key:",
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     const s3Client = new S3Client({
       region: process.env.AWS_REGION as string,
       credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY as string,
+        accessKeyId: process.env.MY_AWS_ACCESS_KEY as string,
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
       },
     });
