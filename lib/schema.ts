@@ -16,7 +16,7 @@ export const commentFormSchema = z.object({
     .optional()
     .refine(
       (file) => !file || (file instanceof File && file.size <= 2 * 1024 * 1024),
-      "Image must less than 2MB "
+      "Image must be less than 2MB "
     ),
 });
 
