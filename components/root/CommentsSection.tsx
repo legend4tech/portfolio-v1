@@ -169,7 +169,7 @@ export function CommentsSection() {
                                   } else {
                                     commentForm.setError("file", {
                                       type: "manual",
-                                      message: "Image must be 2MB or less",
+                                      message: "Image must less than 2MB ",
                                     });
                                   }
                                 }
