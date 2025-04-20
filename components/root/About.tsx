@@ -2,26 +2,28 @@
 
 import { motion } from "framer-motion";
 import { Download, ExternalLink, Code2, Award, Globe } from "lucide-react";
-import Image from "next/image";
 import { Typewriter } from "react-simple-typewriter";
+import { GlowingImage } from "./GlowingImage";
+
+const currentYear = new Date().getFullYear();
 
 // Stats data for the cards
 const stats = [
   {
     icon: <Code2 className="w-6 h-6" />,
-    number: 11,
+    number: "30+",
     title: "TOTAL PROJECTS",
     subtitle: "Innovative web solutions crafted",
   },
   {
     icon: <Award className="w-6 h-6" />,
-    number: 7,
+    number: "5+",
     title: "CERTIFICATES",
     subtitle: "Professional skills validated",
   },
   {
     icon: <Globe className="w-6 h-6" />,
-    number: 3,
+    number: currentYear - 2022,
     title: "YEARS OF EXPERIENCE",
     subtitle: "Continuous learning journey",
   },
@@ -103,23 +105,29 @@ export function About() {
               strong focus on crafting dynamic and user-friendly digital
               experiences. I specialize in Full-Stack development, blending
               creativity with performance optimization to build seamless,
-              high-quality web applications. Always eager to learn and push
-              boundaries, I strive to create innovative solutions that make an
-              impact.
+              high-quality web applications. I&lsquo;m also a Web3 developer
+              contributing to the decentralized web through open-source
+              platforms like OnlyDust. I&lsquo;ve actively contributed to
+              ecosystems such as Starknet, continuously pushing boundaries and
+              creating innovative solutions that make an impact. Always eager to
+              learn and grow, I strive to build technology that matters.
             </motion.p>
 
-            <motion.div variants={itemVariants} className="flex gap-4">
+            <motion.div
+              variants={itemVariants}
+              className="flex flex-wrap gap-4"
+            >
               {/* Download CV Button */}
-              <button className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 transition-colors px-6 py-3 rounded-full">
+              <button className="flex flex-col sm:flex-row items-center gap-2 bg-purple-600 hover:bg-purple-700 transition-colors px-6 py-3 rounded-full">
                 <Download className="w-4 h-4" />
-                Download CV
+                <span>Download CV</span>
               </button>
 
               {/* View Projects Button */}
               <a href="#portfolio">
-                <button className="flex items-center gap-2 glass-card hover:bg-white/10 transition-colors px-6 py-3 rounded-full">
+                <button className="flex flex-col sm:flex-row items-center gap-2 glass-card hover:bg-white/10 transition-colors px-6 py-3 rounded-full">
                   <ExternalLink className="w-4 h-4" />
-                  View Projects
+                  <span>View Projects</span>
                 </button>
               </a>
             </motion.div>
@@ -132,19 +140,12 @@ export function About() {
             viewport={{ once: true }}
             className="relative"
           >
-            <div className="aspect-square max-w-md mx-auto">
-              <div className="w-full h-full rounded-full overflow-hidden relative">
-                {/* Purple glow effect */}
-                <div className="absolute inset-0 bg-purple-500/20 -3xl" />
-                <Image
-                  src="/profile.jpg"
-                  alt="Profile"
-                  width={400}
-                  height={400}
-                  className="w-full h-full object-cover relative z-10 hover:scale-110 transition-transform duration-300 ease-in-out"
-                />
-              </div>
-            </div>
+            <GlowingImage
+              src="/profile.jpg"
+              alt="Profile"
+              width={400}
+              height={400}
+            />
           </motion.div>
         </div>
 

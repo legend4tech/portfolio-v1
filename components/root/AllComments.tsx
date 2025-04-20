@@ -10,7 +10,7 @@ import { CommentTypes } from "@/types/commentTypes";
 
 function AllComments() {
   const { data: comments, isPending, isError, refetch } = useComments();
-  console.log("comment", comments);
+  console.log("commentrgrgrrgrgrg", comments?.length);
   // Loading state
   if (isPending) {
     return (

@@ -28,7 +28,12 @@ const techStack: TechCategory[] = [
     items: [
       { name: "Next JS", icon: "/nextjs.png" },
       { name: "Supabase", icon: "/supabase.png" },
+      { name: "MongoDB", icon: "/mongoDB.png" },
     ],
+  },
+  {
+    category: "Blockchain",
+    items: [{ name: "Solidity", icon: "/solidity.png" }],
   },
   {
     category: "Tools",

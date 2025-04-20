@@ -32,11 +32,26 @@ const socialLinks = [
     name: "Instagram",
     icon: "/instagram.png",
     color: "bg-pink-500/10",
-    link: "#",
+    link: "https://www.instagram.com/legend4tech",
   },
-  { name: "Youtube", icon: "/youtube.png", color: "bg-red-500/10", link: "#" },
-  { name: "Github", icon: "/github.png", color: "bg-gray-600/10", link: "#" },
-  { name: "TikTok", icon: "/tiktok.png", color: "bg-gray-500/10", link: "#" },
+  {
+    name: "X (Twitter)",
+    icon: "/x-twitter-icon.png",
+    color: "bg-red-500/10",
+    link: "https://x.com/legend4tech",
+  },
+  {
+    name: "Github",
+    icon: "/github.png",
+    color: "bg-gray-600/10",
+    link: "https://github.com/legend4tech",
+  },
+  {
+    name: "Discord",
+    icon: "/discord-logo.png",
+    color: "bg-gray-500/10",
+    link: "https://discord.com/users/legend4tech",
+  },
 ];
 
 export function ContactForm() {
