@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Download, ExternalLink, Code2, Award, Globe } from "lucide-react";
 import { Typewriter } from "react-simple-typewriter";
 import { GlowingImage } from "./GlowingImage";
+import { handleDownloadResume } from "@/lib/handleDownloadResume";
 
 const currentYear = new Date().getFullYear();
 
@@ -86,7 +87,7 @@ export function About() {
                 <br />
 
                 <Typewriter
-                  words={["Dennis Ajulu", "A Fullstack Developer"]}
+                  words={["Dennis Ajulu", "A Fullstack Dev.", "A Web3 Dev."]}
                   loop={0}
                   cursor
                   cursorStyle="|"
@@ -115,17 +116,20 @@ export function About() {
 
             <motion.div
               variants={itemVariants}
-              className="flex flex-wrap gap-4"
+              className="flex flex-col xxs:flex-row gap-4"
             >
-              {/* Download CV Button */}
-              <button className="flex flex-col sm:flex-row items-center gap-2 bg-purple-600 hover:bg-purple-700 transition-colors px-6 py-3 rounded-full">
+              {/* Download Resume Button */}
+              <button
+                onClick={handleDownloadResume}
+                className="flex flex-col sm:flex-row items-center gap-2 bg-purple-600 hover:bg-purple-700 transition-colors px-6 py-3 rounded-full cursor-pointer"
+              >
                 <Download className="w-4 h-4" />
-                <span>Download CV</span>
+                <span>Download Resume</span>
               </button>
 
               {/* View Projects Button */}
               <a href="#portfolio">
-                <button className="flex flex-col sm:flex-row items-center gap-2 glass-card hover:bg-white/10 transition-colors px-6 py-3 rounded-full">
+                <button className="flex flex-col sm:flex-row items-center gap-2 glass-card hover:bg-white/10 transition-colors px-6 py-3 rounded-full w-full">
                   <ExternalLink className="w-4 h-4" />
                   <span>View Projects</span>
                 </button>
