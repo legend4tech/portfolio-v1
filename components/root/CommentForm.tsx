@@ -206,7 +206,14 @@ export function CommentForm() {
           className="w-full bg-purple-500 hover:bg-purple-600 focus:ring-2 focus:ring-purple-500/50"
           disabled={isAddingComment}
         >
-          {isAddingComment ? "Posting..." : "Post Comment"}
+          {isAddingComment ? (
+            <span className="flex items-center justify-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              Posting...
+            </span>
+          ) : (
+            "Post Comment"
+          )}
         </Button>
       </form>
     </Form>
