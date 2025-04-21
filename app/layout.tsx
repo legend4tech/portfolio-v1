@@ -48,7 +48,7 @@ export const metadata: Metadata = {
         url: "/og-image.png", // 1200x630px recommended
         width: 1200,
         height: 630,
-        alt: "Legend4Tech- Web2/Web3 Dev.",
+        alt: "Legend4Tech - Web2/Web3 Dev.",
       },
     ],
   },
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   // Twitter metadata
   twitter: {
     card: "summary_large_image",
-    title: "Legend4Tech - Technology Solutions",
+    title: "Legend4Tech - Web2/Web3 Dev.",
     description:
       "Am Legend4tech A passionate Computer Scientist and Full-Stack Developer And Web3 Enthusiast with a strong focus on crafting dynamic and user-friendly digital experiences. I specialize in Full-Stack development, blending creativity with performance optimization to build seamless, high-quality web applications. Always eager to learn and push boundaries, I strive to create innovative solutions that make an impact.",
     images: ["/og-image.png"],
