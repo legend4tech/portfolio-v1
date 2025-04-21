@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { MessageSquare } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,8 +9,36 @@ import { CommentForm } from "./CommentForm";
 import { useComments } from "@/hooks/useComments";
 
 export function CommentsSection() {
+  // Add client-side only rendering control
+  const [isMounted, setIsMounted] = useState(false);
   const { data: comments, isPending: isGettingLength } = useComments();
 
+  // Only run on the client after hydration is complete
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Render a simplified version during server rendering and initial hydration
+  if (!isMounted) {
+    return (
+      <div className="glass-card">
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-white">
+              <MessageSquare className="w-5 h-5" />
+              Comments
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CommentForm />
+            <AllComments />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Client-side only rendering with animations
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
