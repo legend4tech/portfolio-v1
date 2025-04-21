@@ -2,7 +2,7 @@
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 import { motion } from "framer-motion";
-import { ExternalLink, Sparkles } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { Typewriter } from "react-simple-typewriter";
 import { InnovativeButton } from "./InnovativeButton";
 
