@@ -4,6 +4,7 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { motion } from "framer-motion";
 import { ExternalLink, Sparkles } from "lucide-react";
 import { Typewriter } from "react-simple-typewriter";
+import { InnovativeButton } from "./InnovativeButton";
 
 export function Hero() {
   return (
@@ -18,16 +19,7 @@ export function Hero() {
             className="space-y-6"
           >
             {/* Ready to Innovate Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="inline-flex items-center gap-2 glass-card px-4 py-2 rounded-full relative overflow-hidden group"
-            >
-              <Sparkles className="w-4 h-4 text-purple-400" />
-              <span className="text-sm relative z-10">Ready to Innovate</span>
-              <span className="absolute inset-0 bg-gradient-to-r from-purple-400/0 via-purple-400/70 to-blue-500/0 group-hover:animate-shine" />
-            </motion.div>
+            <InnovativeButton />
 
             {/* Main Title */}
             <div className="space-y-4">

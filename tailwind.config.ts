@@ -72,6 +72,7 @@ export default {
         third: "moveInCircle 40s linear infinite",
         fourth: "moveHorizontal 40s ease infinite",
         fifth: "moveInCircle 20s ease infinite",
+        slowSpin: "slowSpin 12s linear infinite",
       },
       keyframes: {
         moveHorizontal: {
@@ -106,6 +107,10 @@ export default {
           "100%": {
             transform: "translateY(-50%)",
           },
+        },
+        slowSpin: {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
         },
       },
     },

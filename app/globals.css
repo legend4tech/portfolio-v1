@@ -98,7 +98,8 @@
   }
 
   .hero-gradient {
-    background: radial-gradient(
+    background:
+      radial-gradient(
         circle at 80% 20%,
         hsl(var(--accent-purple) / 0.15) 0%,
         transparent 50%
@@ -111,7 +112,8 @@
   }
 
   .portfolio-gradient {
-    background: radial-gradient(
+    background:
+      radial-gradient(
         circle at 0% 0%,
         hsl(var(--accent-purple) / 0.1) 0%,
         transparent 50%
@@ -168,4 +170,8 @@
   background-color: theme("colors.purple.500");
   border-radius: 20px;
   border: 2px solid theme("colors.gray.800");
+}
+
+.drop-shadow-glow {
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
 }
