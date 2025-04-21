@@ -6,20 +6,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useComments } from "@/hooks/useComments";
 import RelativeTime from "@/components/RelativeTime";
 import { Button } from "@/components/ui/button";
-import { CommentTypes } from "@/types/commentTypes";
+import type { CommentTypes } from "@/types/commentTypes";
+import SmartTextWrap from "../SmartTextWrap";
 
 function AllComments() {
   const { data: comments, isPending, isError, refetch } = useComments();
-  console.log("commentrgrgrrgrgrg", comments?.length);
+
   // Loading state
   if (isPending) {
     return (
       <div className="comments-container space-y-4">
-        {/* <div className="text-center space-y-2">
-          <Loader2 className="w-12 h-12 text-purple-500 animate-spin mx-auto" />
-          <h3 className="text-xl font-bold text-purple-400">Loading Comments</h3>
-          <p className="text-gray-400">Fetching the latest conversations...</p>
-        </div> */}
         {[...Array(3)].map((_, index) => (
           <CommentSkeleton key={index} />
         ))}
@@ -74,20 +70,16 @@ function AllComments() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  {" "}
-                  {/* min-w-0 allows flex child to shrink below its content size */}
                   <div className="flex justify-between items-center mb-2 flex-wrap">
                     <h4 className="font-semibold text-white text-sm truncate mr-2">
                       {comment.name}
                     </h4>
-                    <RelativeTime
-                      isoString={comment.time_posted}
-                      // className="text-xs text-gray-400 flex-shrink-0"
-                    />
+                    <RelativeTime isoString={comment.time_posted} />
                   </div>
-                  <p className="text-gray-300 break-all whitespace-pre-wrap text-lg">
-                    {comment.message}
-                  </p>
+                  <SmartTextWrap
+                    text={comment.message}
+                    className="text-gray-300 whitespace-pre-wrap text-lg"
+                  />
                 </div>
               </div>
             </CardContent>
