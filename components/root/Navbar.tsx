@@ -25,17 +25,26 @@ export function Navbar() {
             to="home"
             smooth={true}
             duration={500}
-            className="relative w-12 h-12 cursor-pointer"
+            className="relative flex items-center cursor-pointer group"
             onClick={() => scroll.scrollToTop()}
           >
-            <Image
-              src="/logo.png"
-              alt="Logo"
-              width={150}
-              height={50}
-              objectFit="contain"
-              priority
-            />
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="relative"
+            >
+              <Image
+                src="/logo.png"
+                alt="Logo"
+                width={110}
+                height={40}
+                className="object-contain h-auto w-auto sm:w-[180px] xs:w-[140px] transition-all 
+                  group-hover:opacity-90 filter drop-shadow-[0_2px_8px_rgba(124,58,237,0.5)]"
+                priority
+              />
+              <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-lg blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            </motion.div>
           </ScrollLink>
 
           {/* Desktop Navigation */}
@@ -52,12 +61,7 @@ export function Navbar() {
             aria-label="Toggle mobile menu"
           >
             <svg className="h-6 w-6 fill-current" viewBox="0 0 24 24">
-              {isMenuOpen ? (
-                <X />
-              ) : (
-                <Menu />
-                // <p>dccddc</p>
-              )}
+              {isMenuOpen ? <X /> : <Menu />}
             </svg>
           </button>
         </div>
