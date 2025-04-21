@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     siteName: "Legend4Tech",
     images: [
       {
-        url: "https://legend4tech.com/og-image.png", // 1200x630px recommended
+        url: "/og-image.png", // 1200x630px recommended
         width: 1200,
         height: 630,
         alt: "Legend4Tech - Web2/Web3 Dev.",
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     title: "Legend4Tech - Web2/Web3 Dev.",
     description:
       "Am Legend4tech A passionate Computer Scientist and Full-Stack Developer And Web3 Enthusiast with a strong focus on crafting dynamic and user-friendly digital experiences. I specialize in Full-Stack development, blending creativity with performance optimization to build seamless, high-quality web applications. Always eager to learn and push boundaries, I strive to create innovative solutions that make an impact.",
-    images: ["https://legend4tech.com/og-image.png"],
+    images: ["/og-image.png"],
     creator: "@legend4tech",
   },
 
