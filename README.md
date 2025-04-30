@@ -27,7 +27,7 @@
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/legend4tech/portfoliov1-.git
+   git clone https://github.com/legend4tech/portfolio-v1.git
    cd portfolio
    ```
 
