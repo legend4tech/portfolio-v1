@@ -1,5 +1,3 @@
-Here's your enhanced README with detailed environment setup instructions while keeping your keys secure:
-
 # Legend4Tech Portfolio - Modern Developer Showcase
 
 ✨ **A cutting-edge portfolio built with Next.js 15, TypeScript, and Dottie React for stunning animations**
