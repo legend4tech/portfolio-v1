@@ -2,15 +2,19 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Link as ScrollLink, animateScroll as scroll } from "react-scroll";
+import { Link as ScrollLink } from "react-scroll";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 // Navigation items
-const navItems = ["Home", "About", "Portfolio", "Contact"];
+const navItems = ["Home", "About", "OpenSource", "Portfolio", "Contact"];
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -21,12 +25,9 @@ export function Navbar() {
       <div className="container mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <ScrollLink
-            to="home"
-            smooth={true}
-            duration={500}
+          <Link
+            href="/"
             className="relative flex items-center cursor-pointer group"
-            onClick={() => scroll.scrollToTop()}
           >
             <motion.div
               initial={{ opacity: 0, y: -10 }}
@@ -45,12 +46,12 @@ export function Navbar() {
               />
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-lg blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </motion.div>
-          </ScrollLink>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-8">
             {navItems.map((item) => (
-              <NavItem key={item} item={item} />
+              <NavItem key={item} item={item} isHomePage={isHomePage} />
             ))}
           </div>
 
@@ -77,20 +78,31 @@ export function Navbar() {
             transition={{ duration: 0.3 }}
             className="md:hidden overflow-hidden bg-gray-900/50 backdrop-blur-md"
           >
-            {navItems.map((item) => (
-              <ScrollLink
-                key={item}
-                to={item.toLowerCase()}
-                spy={true}
-                smooth={true}
-                duration={200}
-                onClick={closeMenu}
-                className="block w-full text-left py-3 px-6 text-sm font-medium transition-colors hover:text-purple-400 text-gray-300 cursor-pointer"
-                activeClass="text-purple-400"
-              >
-                {item}
-              </ScrollLink>
-            ))}
+            {navItems.map((item) =>
+              isHomePage ? (
+                <ScrollLink
+                  key={item}
+                  to={item.toLowerCase()}
+                  spy={true}
+                  smooth={true}
+                  duration={200}
+                  onClick={closeMenu}
+                  className="block w-full text-left py-3 px-6 text-sm font-medium transition-colors hover:text-purple-400 text-gray-300 cursor-pointer"
+                  activeClass="text-purple-400"
+                >
+                  {item}
+                </ScrollLink>
+              ) : (
+                <Link
+                  key={item}
+                  href={`/#${item.toLowerCase()}`}
+                  onClick={closeMenu}
+                  className="block w-full text-left py-3 px-6 text-sm font-medium transition-colors hover:text-purple-400 text-gray-300"
+                >
+                  {item}
+                </Link>
+              ),
+            )}
           </motion.div>
         )}
       </AnimatePresence>
@@ -99,17 +111,29 @@ export function Navbar() {
 }
 
 // NavItem component for desktop navigation
-function NavItem({ item }: { item: string }) {
+function NavItem({ item, isHomePage }: { item: string; isHomePage: boolean }) {
+  // If on homepage, use scroll; otherwise use Link to navigate back to homepage section
+  if (isHomePage) {
+    return (
+      <ScrollLink
+        to={item.toLowerCase()}
+        spy={true}
+        smooth={true}
+        duration={200}
+        className="text-sm font-medium transition-colors hover:text-purple-400 text-gray-300 cursor-pointer"
+        activeClass="text-purple-400"
+      >
+        {item}
+      </ScrollLink>
+    );
+  }
+
   return (
-    <ScrollLink
-      to={item.toLowerCase()}
-      spy={true}
-      smooth={true}
-      duration={200}
-      className="text-sm font-medium transition-colors hover:text-purple-400 text-gray-300 cursor-pointer"
-      activeClass="text-purple-400"
+    <Link
+      href={`/#${item.toLowerCase()}`}
+      className="text-sm font-medium transition-colors hover:text-purple-400 text-gray-300"
     >
       {item}
-    </ScrollLink>
+    </Link>
   );
 }

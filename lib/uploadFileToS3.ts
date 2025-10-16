@@ -21,7 +21,7 @@ export async function uploadFileToS3(file: File): Promise<string> {
   } catch (error) {
     console.error("Error uploading file:", error);
     throw new Error(
-      `Failed to upload file: ${error instanceof Error ? error.message : String(error)}`
+      `Failed to upload file: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }

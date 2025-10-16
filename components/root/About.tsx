@@ -1,26 +1,21 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Download, ExternalLink, Code2, Award, Globe } from "lucide-react";
+import { Download, ExternalLink, Code2, Globe } from "lucide-react";
 import { Typewriter } from "react-simple-typewriter";
 import { GlowingImage } from "./GlowingImage";
 import { handleDownloadResume } from "@/lib/handleDownloadResume";
+import { CertificateStat } from "./CertificateStat";
 
 const currentYear = new Date().getFullYear();
 
-// Stats data for the cards
+// Stats data for the cards (excluding certificates - will be rendered separately)
 const stats = [
   {
     icon: <Code2 className="w-6 h-6" />,
     number: "30+",
     title: "TOTAL PROJECTS",
     subtitle: "Innovative web solutions crafted",
-  },
-  {
-    icon: <Award className="w-6 h-6" />,
-    number: "5+",
-    title: "CERTIFICATES",
-    subtitle: "Professional skills validated",
   },
   {
     icon: <Globe className="w-6 h-6" />,
@@ -153,7 +148,7 @@ export function About() {
           </motion.div>
         </div>
 
-        {/* Stats Cards */}
+        {/* Stats Cards - 3 column layout with certificate in middle */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -161,23 +156,41 @@ export function About() {
           viewport={{ once: true }}
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {stats.map((stat) => (
-            <motion.div
-              key={stat.title}
-              variants={itemVariants}
-              whileHover={{ y: -5 }}
-              className="glass-card rounded-xl p-6 space-y-4"
-            >
-              <div className="flex justify-between items-start">
-                <div className="p-3 glass-card rounded-full">{stat.icon}</div>
-                <span className="text-4xl font-bold">{stat.number}</span>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-1">{stat.title}</h4>
-                <p className="text-sm text-gray-400">{stat.subtitle}</p>
-              </div>
-            </motion.div>
-          ))}
+          {/* First stat card */}
+          <motion.div
+            variants={itemVariants}
+            whileHover={{ y: -5 }}
+            className="glass-card rounded-xl p-6 space-y-4"
+          >
+            <div className="flex justify-between items-start">
+              <div className="p-3 glass-card rounded-full">{stats[0].icon}</div>
+              <span className="text-4xl font-bold">{stats[0].number}</span>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-1">{stats[0].title}</h4>
+              <p className="text-sm text-gray-400">{stats[0].subtitle}</p>
+            </div>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <CertificateStat />
+          </motion.div>
+
+          {/* Second stat card */}
+          <motion.div
+            variants={itemVariants}
+            whileHover={{ y: -5 }}
+            className="glass-card rounded-xl p-6 space-y-4"
+          >
+            <div className="flex justify-between items-start">
+              <div className="p-3 glass-card rounded-full">{stats[1].icon}</div>
+              <span className="text-4xl font-bold">{stats[1].number}</span>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-1">{stats[1].title}</h4>
+              <p className="text-sm text-gray-400">{stats[1].subtitle}</p>
+            </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>

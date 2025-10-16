@@ -8,18 +8,26 @@ import {
 } from "date-fns";
 
 interface RelativeTimeProps {
-  isoString: string;
+  date: string;
 }
 
-function RelativeTime({ isoString }: RelativeTimeProps) {
+export function RelativeTime({ date: isoString }: RelativeTimeProps) {
   const [relativeTime, setRelativeTime] = useState<string>("");
 
   useEffect(() => {
+    if (!isoString) {
+      setRelativeTime("");
+      return;
+    }
+
     const getRelativeTimeString = (isoString: string): string => {
       const date = parseISO(isoString);
       const distance = formatDistanceToNowStrict(date, { addSuffix: true });
 
-      const [value, unit] = distance.replace("about ", "").split(" ");
+      const parts = distance.replace("about ", "").split(" ");
+      if (parts.length < 2) return distance;
+
+      const [value, unit] = parts;
 
       if (unit === "seconds" || unit === "second") {
         return "just now";
@@ -83,6 +91,8 @@ function RelativeTime({ isoString }: RelativeTimeProps) {
     // Clean up the interval on component unmount
     return () => clearInterval(timer);
   }, [isoString]);
+
+  if (!relativeTime) return null;
 
   return <span className="text-sm text-gray-400">{relativeTime}</span>;
 }

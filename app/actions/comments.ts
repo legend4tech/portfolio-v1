@@ -44,7 +44,7 @@ export async function addComment(formData: FormData) {
     // Keep error logging for production troubleshooting
     console.error("Error adding comment:", error);
     throw new Error(
-      `Error adding comment: ${error instanceof Error ? error.message : String(error)}`
+      `Error adding comment: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }
@@ -66,12 +66,12 @@ export async function getComments(): Promise<CommentTypes[]> {
         message: comment.message,
         time_posted: comment.time_posted,
         avatar: comment.avatar,
-      })
+      }),
     );
   } catch (error) {
     console.error("Error fetching comments:", error);
     throw new Error(
-      `Error fetching comments: ${error instanceof Error ? error.message : String(error)}`
+      `Error fetching comments: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }

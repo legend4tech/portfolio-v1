@@ -157,6 +157,7 @@ export function CommentForm() {
                           }
                         }}
                         {...field}
+                        value=""
                       />
                     </div>
                     <div className="flex-1">
@@ -183,7 +184,7 @@ export function CommentForm() {
                           if (document.getElementById("photo-upload")) {
                             (
                               document.getElementById(
-                                "photo-upload"
+                                "photo-upload",
                               ) as HTMLInputElement
                             ).value = "";
                           }
