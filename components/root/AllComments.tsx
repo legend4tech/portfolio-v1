@@ -74,7 +74,7 @@ function AllComments() {
                     <h4 className="font-semibold text-white text-sm truncate mr-2">
                       {comment.name}
                     </h4>
-                    <RelativeTime isoString={comment.time_posted} />
+                    <RelativeTime date={comment.time_posted} />
                   </div>
                   <SmartTextWrap
                     text={comment.message}

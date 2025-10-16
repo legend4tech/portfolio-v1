@@ -138,10 +138,10 @@
   }
 }
 
-.glass-input {
-  @apply bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all;
-}
-
+ .glass-input {
+    /* Explicitly removing all inherited borders and outlines, using only purple shadow */
+    @apply bg-white/5 border-0 outline-0 rounded-lg px-4 py-3 text-white placeholder:text-gray-400 shadow-[0_0_0_1px_rgb(168_85_247/0.3)] focus:shadow-[0_0_0_2px_rgb(168_85_247/0.6)] transition-shadow duration-200;
+  }
 .glass-card {
   @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-lg;
 }

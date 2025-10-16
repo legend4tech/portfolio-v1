@@ -1,9 +1,10 @@
-import { About } from "@/components/root/About";
-import { Contact } from "@/components/root/Contact";
-import { Footer } from "@/components/root/Footer";
-import { Hero } from "@/components/root/Hero";
-import { Navbar } from "@/components/root/Navbar";
-import { Portfolio } from "@/components/root/Portfolio";
+import { About } from "@/components/root/About"
+import { Contact } from "@/components/root/Contact"
+import { Footer } from "@/components/root/Footer"
+import { Hero } from "@/components/root/Hero"
+import { Navbar } from "@/components/root/Navbar"
+import { Portfolio } from "@/components/root/Portfolio"
+import { OpenSourceSection } from "@/components/opensource/OpenSourceSection"
 
 export default function Home() {
   return (
@@ -16,6 +17,9 @@ export default function Home() {
         <section id="about">
           <About />
         </section>
+        <section id="opensource">
+          <OpenSourceSection />
+        </section>
         <section id="portfolio">
           <Portfolio />
         </section>
@@ -25,5 +29,5 @@ export default function Home() {
       </main>
       <Footer />
     </div>
-  );
+  )
 }

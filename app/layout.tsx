@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Site metadata configuration
+// ✅ Site metadata configuration
 export const metadata: Metadata = {
   metadataBase: new URL("https://legend4tech.com"),
   title: {
@@ -23,29 +23,22 @@ export const metadata: Metadata = {
   },
   description:
     "Am Legend4tech A passionate Computer Scientist and Full-Stack Developer And Web3 Enthusiast with a strong focus on crafting dynamic and user-friendly digital experiences. I specialize in Full-Stack development, blending creativity with performance optimization to build seamless, high-quality web applications. Always eager to learn and push boundaries, I strive to create innovative solutions that make an impact.",
-  keywords: [
-    "technology",
-    "legend",
-    "legend4tech",
-    "web development",
-    "IT services",
-  ],
+  keywords: ["technology", "legend", "legend4tech", "web development", "IT services"],
   authors: [{ name: "Legend4Tech" }],
   creator: "Legend4Tech",
   publisher: "Legend4Tech",
 
-  // Open Graph / Facebook metadata
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://legend4tech.com",
     title: "Legend4Tech - Web2/Web3 Dev.",
     description:
-      "Am Legend4tech A passionate Computer Scientist and Full-Stack Developer And Web3 Enthusiast with a strong focus on crafting dynamic and user-friendly digital experiences. I specialize in Full-Stack development, blending creativity with performance optimization to build seamless, high-quality web applications. Always eager to learn and push boundaries, I strive to create innovative solutions that make an impact.",
+      "Am Legend4tech A passionate Computer Scientist and Full-Stack Developer And Web3 Enthusiast...",
     siteName: "Legend4Tech",
     images: [
       {
-        url: "/og-image.png", // 1200x630px recommended
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "Legend4Tech - Web2/Web3 Dev.",
@@ -53,17 +46,15 @@ export const metadata: Metadata = {
     ],
   },
 
-  // Twitter metadata
   twitter: {
     card: "summary_large_image",
     title: "Legend4Tech - Web2/Web3 Dev.",
     description:
-      "Am Legend4tech A passionate Computer Scientist and Full-Stack Developer And Web3 Enthusiast with a strong focus on crafting dynamic and user-friendly digital experiences. I specialize in Full-Stack development, blending creativity with performance optimization to build seamless, high-quality web applications. Always eager to learn and push boundaries, I strive to create innovative solutions that make an impact.",
+      "Am Legend4tech A passionate Computer Scientist and Full-Stack Developer And Web3 Enthusiast...",
     images: ["/og-image.png"],
     creator: "@legend4tech",
   },
 
-  // Icons configuration
   icons: {
     icon: [
       { url: "/favicon.ico" },
@@ -82,15 +73,11 @@ export const metadata: Metadata = {
     ],
   },
 
-  // Web manifest
   manifest: "/site.webmanifest",
+};
 
-  // Microsoft specific
-  // verification: {
-  //   google: "your-google-site-verification-if-you-have-one",
-  // },
-
-  // Additional browser configurations
+// ✅ Move themeColor here (new format for Next.js 15+)
+export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
     { media: "(prefers-color-scheme: dark)", color: "#0a051a" },
@@ -99,14 +86,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className="custom-scrollbar">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased  `}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
           <main>{children}</main>
           <Toaster position="top-right" closeButton richColors />

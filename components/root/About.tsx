@@ -1,14 +1,15 @@
-"use client";
+"use client"
 
-import { motion } from "framer-motion";
-import { Download, ExternalLink, Code2, Award, Globe } from "lucide-react";
-import { Typewriter } from "react-simple-typewriter";
-import { GlowingImage } from "./GlowingImage";
-import { handleDownloadResume } from "@/lib/handleDownloadResume";
+import { motion } from "framer-motion"
+import { Download, ExternalLink, Code2, Globe } from "lucide-react"
+import { Typewriter } from "react-simple-typewriter"
+import { GlowingImage } from "./GlowingImage"
+import { handleDownloadResume } from "@/lib/handleDownloadResume"
+import { CertificateStat } from "./CertificateStat"
 
-const currentYear = new Date().getFullYear();
+const currentYear = new Date().getFullYear()
 
-// Stats data for the cards
+// Stats data for the cards (excluding certificates - will be rendered separately)
 const stats = [
   {
     icon: <Code2 className="w-6 h-6" />,
@@ -17,18 +18,12 @@ const stats = [
     subtitle: "Innovative web solutions crafted",
   },
   {
-    icon: <Award className="w-6 h-6" />,
-    number: "5+",
-    title: "CERTIFICATES",
-    subtitle: "Professional skills validated",
-  },
-  {
     icon: <Globe className="w-6 h-6" />,
     number: currentYear - 2022,
     title: "YEARS OF EXPERIENCE",
     subtitle: "Continuous learning journey",
   },
-];
+]
 
 export function About() {
   // Animation variants for staggered children
@@ -40,7 +35,7 @@ export function About() {
         staggerChildren: 0.2,
       },
     },
-  };
+  }
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -51,7 +46,7 @@ export function About() {
         duration: 0.5,
       },
     },
-  };
+  }
 
   return (
     <section id="about" className="min-h-screen py-20 hero-gradient">
@@ -98,26 +93,16 @@ export function About() {
               </h3>
             </motion.div>
 
-            <motion.p
-              variants={itemVariants}
-              className="text-gray-400 leading-relaxed"
-            >
-              A passionate Computer Scientist and Full-Stack Developer with a
-              strong focus on crafting dynamic and user-friendly digital
-              experiences. I specialize in Full-Stack development, blending
-              creativity with performance optimization to build seamless,
-              high-quality web applications. I&lsquo;m also a Web3 developer
-              contributing to the decentralized web through open-source
-              platforms like OnlyDust. I&lsquo;ve actively contributed to
-              ecosystems such as Starknet, continuously pushing boundaries and
-              creating innovative solutions that make an impact. Always eager to
-              learn and grow, I strive to build technology that matters.
+            <motion.p variants={itemVariants} className="text-gray-400 leading-relaxed">
+              A passionate Computer Scientist and Full-Stack Developer with a strong focus on crafting dynamic and
+              user-friendly digital experiences. I specialize in Full-Stack development, blending creativity with
+              performance optimization to build seamless, high-quality web applications. I&lsquo;m also a Web3 developer
+              contributing to the decentralized web through open-source platforms like OnlyDust. I&lsquo;ve actively
+              contributed to ecosystems such as Starknet, continuously pushing boundaries and creating innovative
+              solutions that make an impact. Always eager to learn and grow, I strive to build technology that matters.
             </motion.p>
 
-            <motion.div
-              variants={itemVariants}
-              className="flex flex-col xxs:flex-row gap-4"
-            >
+            <motion.div variants={itemVariants} className="flex flex-col xxs:flex-row gap-4">
               {/* Download Resume Button */}
               <button
                 onClick={handleDownloadResume}
@@ -144,16 +129,11 @@ export function About() {
             viewport={{ once: true }}
             className="relative"
           >
-            <GlowingImage
-              src="/profile.jpg"
-              alt="Profile"
-              width={400}
-              height={400}
-            />
+            <GlowingImage src="/profile.jpg" alt="Profile" width={400} height={400} />
           </motion.div>
         </div>
 
-        {/* Stats Cards */}
+        {/* Stats Cards - 3 column layout with certificate in middle */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -161,25 +141,35 @@ export function About() {
           viewport={{ once: true }}
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {stats.map((stat) => (
-            <motion.div
-              key={stat.title}
-              variants={itemVariants}
-              whileHover={{ y: -5 }}
-              className="glass-card rounded-xl p-6 space-y-4"
-            >
-              <div className="flex justify-between items-start">
-                <div className="p-3 glass-card rounded-full">{stat.icon}</div>
-                <span className="text-4xl font-bold">{stat.number}</span>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-1">{stat.title}</h4>
-                <p className="text-sm text-gray-400">{stat.subtitle}</p>
-              </div>
-            </motion.div>
-          ))}
+          {/* First stat card */}
+          <motion.div variants={itemVariants} whileHover={{ y: -5 }} className="glass-card rounded-xl p-6 space-y-4">
+            <div className="flex justify-between items-start">
+              <div className="p-3 glass-card rounded-full">{stats[0].icon}</div>
+              <span className="text-4xl font-bold">{stats[0].number}</span>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-1">{stats[0].title}</h4>
+              <p className="text-sm text-gray-400">{stats[0].subtitle}</p>
+            </div>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <CertificateStat />
+          </motion.div>
+
+          {/* Second stat card */}
+          <motion.div variants={itemVariants} whileHover={{ y: -5 }} className="glass-card rounded-xl p-6 space-y-4">
+            <div className="flex justify-between items-start">
+              <div className="p-3 glass-card rounded-full">{stats[1].icon}</div>
+              <span className="text-4xl font-bold">{stats[1].number}</span>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-1">{stats[1].title}</h4>
+              <p className="text-sm text-gray-400">{stats[1].subtitle}</p>
+            </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>
-  );
+  )
 }

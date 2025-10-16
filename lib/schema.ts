@@ -6,7 +6,7 @@ export const commentFormSchema = z.object({
   name: z
     .string()
     .min(2, "Name must be at least 2 characters")
-    .max(12, "Name must be less than 12 characters"),
+    .max(20, "Name must be less than 21 characters"),
   message: z
     .string()
     .min(1, "Message is required")
