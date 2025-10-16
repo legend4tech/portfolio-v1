@@ -82,7 +82,7 @@ export function About() {
                 <br />
 
                 <Typewriter
-                  words={["Dennis Ajulu", "A Fullstack Dev.", "A Web3 Dev."]}
+                  words={["Dennis Ajulu", "A Fullstack Developer", "A Web3 Developer"]}
                   loop={0}
                   cursor
                   cursorStyle="|"
