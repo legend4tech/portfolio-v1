@@ -1,17 +1,30 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { signIn } from "next-auth/react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Loader2, Lock, Mail } from "lucide-react"
-import { toast } from "sonner"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Loader2, Lock, Mail } from "lucide-react";
+import { toast } from "sonner";
 
 /**
  * Login Form Schema
@@ -19,18 +32,18 @@ import { toast } from "sonner"
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-})
+});
 
-type LoginFormData = z.infer<typeof loginSchema>
+type LoginFormData = z.infer<typeof loginSchema>;
 
 /**
  * Login Form Component
  * Handles email/password and Google OAuth authentication
  */
 export function LoginForm() {
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [googleLoading, setGoogleLoading] = useState(false)
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -38,50 +51,50 @@ export function LoginForm() {
       email: "",
       password: "",
     },
-  })
+  });
 
   /**
    * Handle email/password login
    */
   const onSubmit = async (data: LoginFormData) => {
-    setLoading(true)
+    setLoading(true);
 
     try {
       const result = await signIn("credentials", {
         email: data.email,
         password: data.password,
         redirect: false,
-      })
+      });
 
       if (result?.error) {
-        toast.error("Invalid email or password")
-        return
+        toast.error("Invalid email or password");
+        return;
       }
 
-      toast.success("Login successful!")
-      router.push("/admin")
-      router.refresh()
+      toast.success("Login successful!");
+      router.push("/admin");
+      router.refresh();
     } catch (error) {
-      console.error("Login error:", error)
-      toast.error("An error occurred. Please try again.")
+      console.error("Login error:", error);
+      toast.error("An error occurred. Please try again.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   /**
    * Handle Google OAuth login
    */
   const handleGoogleLogin = async () => {
-    setGoogleLoading(true)
+    setGoogleLoading(true);
     try {
-      await signIn("google", { callbackUrl: "/admin" })
+      await signIn("google", { callbackUrl: "/admin" });
     } catch (error) {
-      console.error("Google login error:", error)
-      toast.error("Failed to login with Google")
-      setGoogleLoading(false)
+      console.error("Google login error:", error);
+      toast.error("Failed to login with Google");
+      setGoogleLoading(false);
     }
-  }
+  };
 
   return (
     <Card className="w-full max-w-md glass-card border border-white/10 shadow-2xl">
@@ -90,8 +103,12 @@ export function LoginForm() {
           <Lock className="w-10 h-10 text-purple-400" />
         </div>
         <div className="space-y-2">
-          <CardTitle className="text-4xl font-bold gradient-text">Admin Login</CardTitle>
-          <CardDescription className="text-gray-400 text-base">Sign in to access the admin dashboard</CardDescription>
+          <CardTitle className="text-4xl font-bold gradient-text">
+            Admin Login
+          </CardTitle>
+          <CardDescription className="text-gray-400 text-base">
+            Sign in to access the admin dashboard
+          </CardDescription>
         </div>
       </CardHeader>
       <CardContent className="space-y-6 px-8 pb-8">
@@ -104,7 +121,9 @@ export function LoginForm() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-white font-medium text-sm">Email</FormLabel>
+                  <FormLabel className="text-white font-medium text-sm">
+                    Email
+                  </FormLabel>
                   <FormControl>
                     <div className="relative group">
                       <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 transition-colors group-focus-within:text-purple-400" />
@@ -128,7 +147,9 @@ export function LoginForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-white font-medium text-sm">Password</FormLabel>
+                  <FormLabel className="text-white font-medium text-sm">
+                    Password
+                  </FormLabel>
                   <FormControl>
                     <div className="relative group">
                       <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 transition-colors group-focus-within:text-purple-400" />
@@ -168,7 +189,9 @@ export function LoginForm() {
             <div className="w-full border-t border-white/20" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-4 bg-gray-900/80 text-gray-400 font-medium">Or continue with</span>
+            <span className="px-4 bg-gray-900/80 text-gray-400 font-medium">
+              Or continue with
+            </span>
           </div>
         </div>
 
@@ -210,5 +233,5 @@ export function LoginForm() {
         </Button>
       </CardContent>
     </Card>
-  )
+  );
 }

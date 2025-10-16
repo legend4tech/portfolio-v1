@@ -1,14 +1,21 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { ExternalLink, GitPullRequest, Tag, CheckCircle2, GitBranch, FileCode } from "lucide-react"
-import Link from "next/link"
-import type { GitHubPRDisplay } from "@/types/portfolioTypes"
-import { RelativeTime } from "../RelativeTime"
+import { motion } from "framer-motion";
+import {
+  ExternalLink,
+  GitPullRequest,
+  Tag,
+  CheckCircle2,
+  GitBranch,
+  FileCode,
+} from "lucide-react";
+import Link from "next/link";
+import type { GitHubPRDisplay } from "@/types/portfolioTypes";
+import { RelativeTime } from "../RelativeTime";
 
 interface PRCardProps {
-  pr: GitHubPRDisplay
-  index: number
+  pr: GitHubPRDisplay;
+  index: number;
 }
 
 export function PRCard({ pr, index }: PRCardProps) {
@@ -52,7 +59,9 @@ export function PRCard({ pr, index }: PRCardProps) {
 
       {/* Description - Added break-words and proper text wrapping */}
       {pr.description && (
-        <p className="text-gray-400 text-sm line-clamp-3 break-words">{pr.description.split("\n")[0]}</p>
+        <p className="text-gray-400 text-sm line-clamp-3 break-words">
+          {pr.description.split("\n")[0]}
+        </p>
       )}
 
       {/* Labels */}
@@ -72,7 +81,11 @@ export function PRCard({ pr, index }: PRCardProps) {
               <span className="break-words">{label.name}</span>
             </span>
           ))}
-          {pr.labels.length > 5 && <span className="text-xs text-gray-500">+{pr.labels.length - 5} more</span>}
+          {pr.labels.length > 5 && (
+            <span className="text-xs text-gray-500">
+              +{pr.labels.length - 5} more
+            </span>
+          )}
         </div>
       )}
 
@@ -104,7 +117,11 @@ export function PRCard({ pr, index }: PRCardProps) {
       <div className="flex items-center justify-between pt-2 text-xs text-gray-500 border-t border-white/5">
         <span className="flex items-center gap-1">
           Merged{" "}
-          {pr.mergedAt ? <RelativeTime date={pr.mergedAt} /> : <span className="text-sm text-gray-400">recently</span>}
+          {pr.mergedAt ? (
+            <RelativeTime date={pr.mergedAt} />
+          ) : (
+            <span className="text-sm text-gray-400">recently</span>
+          )}
         </span>
         <Link
           href={pr.url}
@@ -117,5 +134,5 @@ export function PRCard({ pr, index }: PRCardProps) {
         </Link>
       </div>
     </motion.div>
-  )
+  );
 }

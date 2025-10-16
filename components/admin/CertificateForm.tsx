@@ -1,44 +1,71 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useTransition } from "react"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Loader2, Upload, X } from "lucide-react"
-import { toast } from "sonner"
-import { addCertificate, updateCertificate } from "@/app/actions/certificates"
-import type { DBCertificate } from "@/types/portfolioTypes"
-import Image from "next/image"
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Loader2, Upload, X } from "lucide-react";
+import { toast } from "sonner";
+import { addCertificate, updateCertificate } from "@/app/actions/certificates";
+import type { DBCertificate } from "@/types/portfolioTypes";
+import Image from "next/image";
 
 const certificateSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters").max(200, "Title is too long"),
-  issuer: z.string().min(2, "Issuer must be at least 2 characters").max(100, "Issuer is too long"),
+  title: z
+    .string()
+    .min(3, "Title must be at least 3 characters")
+    .max(200, "Title is too long"),
+  issuer: z
+    .string()
+    .min(2, "Issuer must be at least 2 characters")
+    .max(100, "Issuer is too long"),
   date: z.string().min(1, "Date is required"),
   image: z.string().url("Must be a valid URL").min(1, "Image is required"),
-  href: z.string().url("Must be a valid URL").min(1, "Certificate URL is required"),
-})
+  href: z
+    .string()
+    .url("Must be a valid URL")
+    .min(1, "Certificate URL is required"),
+});
 
-type CertificateFormValues = z.infer<typeof certificateSchema>
+type CertificateFormValues = z.infer<typeof certificateSchema>;
 
 interface CertificateFormProps {
-  certificate?: DBCertificate
-  mode: "create" | "edit"
+  certificate?: DBCertificate;
+  mode: "create" | "edit";
 }
 
 export function CertificateForm({ certificate, mode }: CertificateFormProps) {
-  const router = useRouter()
-  const [isPending, startTransition] = useTransition()
-  const [isUploading, setIsUploading] = useState(false)
-  const [imagePreview, setImagePreview] = useState<string | null>(certificate?.image || null)
-  const [imageInputMode, setImageInputMode] = useState<"upload" | "url">("upload")
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [isUploading, setIsUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    certificate?.image || null,
+  );
+  const [imageInputMode, setImageInputMode] = useState<"upload" | "url">(
+    "upload",
+  );
 
   const form = useForm<CertificateFormValues>({
     resolver: zodResolver(certificateSchema),
@@ -49,87 +76,93 @@ export function CertificateForm({ certificate, mode }: CertificateFormProps) {
       image: certificate?.image || "",
       href: certificate?.href || "",
     },
-  })
+  });
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const file = e.target.files?.[0];
+    if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      toast.error("Please upload an image file")
-      return
+      toast.error("Please upload an image file");
+      return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image size must be less than 5MB")
-      return
+      toast.error("Image size must be less than 5MB");
+      return;
     }
 
-    setIsUploading(true)
+    setIsUploading(true);
 
     try {
-      const formData = new FormData()
-      formData.append("file", file)
+      const formData = new FormData();
+      formData.append("file", file);
 
       const response = await fetch("/api/upload", {
         method: "POST",
         body: formData,
-      })
+      });
 
       if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.error || "Upload failed")
+        const data = await response.json();
+        throw new Error(data.error || "Upload failed");
       }
 
-      const data = await response.json()
+      const data = await response.json();
 
-      form.setValue("image", data.fileUrl)
-      setImagePreview(data.fileUrl)
-      toast.success("Image uploaded successfully!")
+      form.setValue("image", data.fileUrl);
+      setImagePreview(data.fileUrl);
+      toast.success("Image uploaded successfully!");
     } catch (error) {
-      console.error("Upload error:", error)
-      toast.error(error instanceof Error ? error.message : "Failed to upload image")
+      console.error("Upload error:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to upload image",
+      );
     } finally {
-      setIsUploading(false)
+      setIsUploading(false);
     }
-  }
+  };
 
   const handleImageUrlChange = (url: string) => {
-    form.setValue("image", url)
-    setImagePreview(url)
-  }
+    form.setValue("image", url);
+    setImagePreview(url);
+  };
 
   const handleChangeImage = () => {
-    setImagePreview(null)
-    form.setValue("image", "")
-  }
+    setImagePreview(null);
+    form.setValue("image", "");
+  };
 
   const onSubmit = async (values: CertificateFormValues) => {
     startTransition(async () => {
       try {
-        const formData = new FormData()
-        formData.append("title", values.title)
-        formData.append("issuer", values.issuer)
-        formData.append("date", values.date)
-        formData.append("image", values.image)
-        formData.append("href", values.href)
+        const formData = new FormData();
+        formData.append("title", values.title);
+        formData.append("issuer", values.issuer);
+        formData.append("date", values.date);
+        formData.append("image", values.image);
+        formData.append("href", values.href);
 
         if (mode === "edit" && certificate?._id) {
-          await updateCertificate(certificate._id, formData)
-          toast.success("Certificate updated successfully!")
+          await updateCertificate(certificate._id, formData);
+          toast.success("Certificate updated successfully!");
         } else {
-          await addCertificate(formData)
-          toast.success("Certificate added successfully!")
+          await addCertificate(formData);
+          toast.success("Certificate added successfully!");
         }
 
-        router.push("/admin/certificates")
-        router.refresh()
+        router.push("/admin/certificates");
+        router.refresh();
       } catch (error) {
-        console.error("Form submission error:", error)
-        toast.error(mode === "edit" ? "Failed to update certificate" : "Failed to add certificate")
+        console.error("Form submission error:", error);
+        toast.error(
+          mode === "edit"
+            ? "Failed to update certificate"
+            : "Failed to add certificate",
+        );
       }
-    })
-  }
+    });
+  };
 
   return (
     <Card className="glass-card border-0">
@@ -138,7 +171,9 @@ export function CertificateForm({ certificate, mode }: CertificateFormProps) {
           {mode === "edit" ? "Edit Certificate" : "Add New Certificate"}
         </CardTitle>
         <CardDescription className="text-gray-400">
-          {mode === "edit" ? "Update certificate information" : "Fill in the details to add a new certificate"}
+          {mode === "edit"
+            ? "Update certificate information"
+            : "Fill in the details to add a new certificate"}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -149,7 +184,9 @@ export function CertificateForm({ certificate, mode }: CertificateFormProps) {
               name="image"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-white">Certificate Image</FormLabel>
+                  <FormLabel className="text-white">
+                    Certificate Image
+                  </FormLabel>
                   <FormControl>
                     <div className="space-y-4">
                       {imagePreview ? (
@@ -178,8 +215,16 @@ export function CertificateForm({ certificate, mode }: CertificateFormProps) {
                             <Button
                               type="button"
                               size="sm"
-                              variant={imageInputMode === "upload" ? "default" : "ghost"}
-                              className={imageInputMode === "upload" ? "bg-purple-500 hover:bg-purple-600" : "text-purple-500"}
+                              variant={
+                                imageInputMode === "upload"
+                                  ? "default"
+                                  : "ghost"
+                              }
+                              className={
+                                imageInputMode === "upload"
+                                  ? "bg-purple-500 hover:bg-purple-600"
+                                  : "text-purple-500"
+                              }
                               onClick={() => setImageInputMode("upload")}
                             >
                               <Upload className="w-4 h-4 mr-2" />
@@ -188,8 +233,14 @@ export function CertificateForm({ certificate, mode }: CertificateFormProps) {
                             <Button
                               type="button"
                               size="sm"
-                              variant={imageInputMode === "url" ? "default" : "ghost"}
-                              className={imageInputMode === "url" ? "bg-purple-500 hover:bg-purple-600" : "text-purple-500"}
+                              variant={
+                                imageInputMode === "url" ? "default" : "ghost"
+                              }
+                              className={
+                                imageInputMode === "url"
+                                  ? "bg-purple-500 hover:bg-purple-600"
+                                  : "text-purple-500"
+                              }
                               onClick={() => setImageInputMode("url")}
                             >
                               Link
@@ -205,7 +256,9 @@ export function CertificateForm({ certificate, mode }: CertificateFormProps) {
                               >
                                 Click to upload certificate image
                               </Label>
-                              <p className="text-sm text-gray-500 mt-2">PNG, JPG, WebP up to 5MB</p>
+                              <p className="text-sm text-gray-500 mt-2">
+                                PNG, JPG, WebP up to 5MB
+                              </p>
                               <Input
                                 id="image-upload"
                                 type="file"
@@ -221,7 +274,9 @@ export function CertificateForm({ certificate, mode }: CertificateFormProps) {
                               className="glass-input"
                               placeholder="https://example.com/certificate.jpg"
                               type="url"
-                              onChange={(e) => handleImageUrlChange(e.target.value)}
+                              onChange={(e) =>
+                                handleImageUrlChange(e.target.value)
+                              }
                             />
                           )}
 
@@ -252,9 +307,15 @@ export function CertificateForm({ certificate, mode }: CertificateFormProps) {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-white">Certificate Title</FormLabel>
+                  <FormLabel className="text-white">
+                    Certificate Title
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., React and Next.js Complete Course" className="glass-input" {...field} />
+                    <Input
+                      placeholder="e.g., React and Next.js Complete Course"
+                      className="glass-input"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage className="text-red-400" />
                 </FormItem>
@@ -268,7 +329,11 @@ export function CertificateForm({ certificate, mode }: CertificateFormProps) {
                 <FormItem>
                   <FormLabel className="text-white">Issuer</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Udemy, Coursera, etc." className="glass-input" {...field} />
+                    <Input
+                      placeholder="e.g., Udemy, Coursera, etc."
+                      className="glass-input"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage className="text-red-400" />
                 </FormItem>
@@ -282,7 +347,11 @@ export function CertificateForm({ certificate, mode }: CertificateFormProps) {
                 <FormItem>
                   <FormLabel className="text-white">Date Issued</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., October 22 2023" className="glass-input" {...field} />
+                    <Input
+                      placeholder="e.g., October 22 2023"
+                      className="glass-input"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage className="text-red-400" />
                 </FormItem>
@@ -296,9 +365,15 @@ export function CertificateForm({ certificate, mode }: CertificateFormProps) {
                 <FormItem>
                   <FormLabel className="text-white">Certificate URL</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://..." className="glass-input" {...field} />
+                    <Input
+                      placeholder="https://..."
+                      className="glass-input"
+                      {...field}
+                    />
                   </FormControl>
-                  <FormDescription className="text-gray-500 text-sm">Link to view the full certificate</FormDescription>
+                  <FormDescription className="text-gray-500 text-sm">
+                    Link to view the full certificate
+                  </FormDescription>
                   <FormMessage className="text-red-400" />
                 </FormItem>
               )}
@@ -334,5 +409,5 @@ export function CertificateForm({ certificate, mode }: CertificateFormProps) {
         </Form>
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
 
 /**
  * Loading skeleton for tech stack items
@@ -13,7 +13,7 @@ export function TechStackItemSkeleton() {
       {/* Name skeleton */}
       <Skeleton className="h-4 w-16 bg-purple-500/10" />
     </div>
-  )
+  );
 }
 
 /**
@@ -27,7 +27,7 @@ export function TechStackGridSkeleton({ count = 6 }: { count?: number }) {
         <TechStackItemSkeleton key={i} />
       ))}
     </div>
-  )
+  );
 }
 
 /**
@@ -43,5 +43,5 @@ export function TechStackCategorySkeleton() {
       {/* Tech items grid */}
       <TechStackGridSkeleton count={6} />
     </div>
-  )
+  );
 }

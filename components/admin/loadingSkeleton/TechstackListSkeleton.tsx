@@ -1,5 +1,5 @@
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 /**
  * Loading skeleton for tech stack list
@@ -20,7 +20,10 @@ export function TechStackListSkeleton() {
           {/* Tech Stack Grid - Matching original 6-column layout */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
             {[1, 2, 3, 4, 5, 6].map((item) => (
-              <Card key={item} className="glass-card border-0 relative overflow-hidden">
+              <Card
+                key={item}
+                className="glass-card border-0 relative overflow-hidden"
+              >
                 {/* Animated gradient background */}
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-purple-500/0 to-blue-500/5 animate-pulse" />
 
@@ -62,5 +65,5 @@ export function TechStackListSkeleton() {
         </div>
       ))}
     </div>
-  )
+  );
 }

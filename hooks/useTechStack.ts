@@ -1,6 +1,6 @@
-import { getTechStack } from "@/app/actions/techstack"
-import type { DBTechStack } from "@/types/portfolioTypes"
-import { useQuery } from "@tanstack/react-query"
+import { getTechStack } from "@/app/actions/techstack";
+import type { DBTechStack } from "@/types/portfolioTypes";
+import { useQuery } from "@tanstack/react-query";
 
 /**
  * React Query hook to fetch all tech stack items
@@ -11,14 +11,14 @@ export function useTechStack() {
     queryKey: ["techstack"],
     queryFn: async () => {
       try {
-        const techStack = await getTechStack()
-        return Array.isArray(techStack) ? techStack : []
+        const techStack = await getTechStack();
+        return Array.isArray(techStack) ? techStack : [];
       } catch (error) {
-        console.error("Error fetching tech stack:", error)
-        throw error // Throw error instead of returning empty array to trigger error state
+        console.error("Error fetching tech stack:", error);
+        throw error; // Throw error instead of returning empty array to trigger error state
       }
     },
     staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
     retry: 2, // Retry failed requests twice
-  })
+  });
 }

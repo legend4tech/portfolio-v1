@@ -1,35 +1,53 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Plus, X, Loader2, Upload } from "lucide-react"
-import { addProject, updateProject } from "@/app/actions/projects"
-import type { DBProject } from "@/types/portfolioTypes"
-import { projectSchema, type ProjectFormData } from "@/lib/project_schema"
-import { toast } from "sonner"
-import Image from "next/image"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Plus, X, Loader2, Upload } from "lucide-react";
+import { addProject, updateProject } from "@/app/actions/projects";
+import type { DBProject } from "@/types/portfolioTypes";
+import { projectSchema, type ProjectFormData } from "@/lib/project_schema";
+import { toast } from "sonner";
+import Image from "next/image";
 
 interface ProjectFormProps {
-  project?: DBProject
+  project?: DBProject;
 }
 
 export function ProjectForm({ project }: ProjectFormProps) {
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [uploading, setUploading] = useState(false)
-  const [imagePreview, setImagePreview] = useState<string | null>(project?.image || null)
-  const [imageInputMode, setImageInputMode] = useState<"upload" | "url">("upload")
-  const [newTech, setNewTech] = useState("")
-  const [newFeature, setNewFeature] = useState("")
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    project?.image || null,
+  );
+  const [imageInputMode, setImageInputMode] = useState<"upload" | "url">(
+    "upload",
+  );
+  const [newTech, setNewTech] = useState("");
+  const [newFeature, setNewFeature] = useState("");
 
   const form = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema),
@@ -42,140 +60,144 @@ export function ProjectForm({ project }: ProjectFormProps) {
       demoUrl: project?.demoUrl || "",
       githubUrl: project?.githubUrl || "",
     },
-  })
+  });
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const file = e.target.files?.[0];
+    if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("File size must be less than 5MB")
-      return
+      toast.error("File size must be less than 5MB");
+      return;
     }
 
-    setUploading(true)
+    setUploading(true);
     try {
-      const formData = new FormData()
-      formData.append("file", file)
+      const formData = new FormData();
+      formData.append("file", file);
 
       const response = await fetch("/api/upload", {
         method: "POST",
         body: formData,
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to upload image")
+        throw new Error(data.error || "Failed to upload image");
       }
 
-      form.setValue("image", data.fileUrl)
-      setImagePreview(data.fileUrl)
-      toast.success("Image uploaded successfully!")
+      form.setValue("image", data.fileUrl);
+      setImagePreview(data.fileUrl);
+      toast.success("Image uploaded successfully!");
     } catch (error) {
-      console.error("Error uploading image:", error)
-      toast.error(error instanceof Error ? error.message : "Failed to upload image")
+      console.error("Error uploading image:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to upload image",
+      );
     } finally {
-      setUploading(false)
+      setUploading(false);
     }
-  }
+  };
 
   const handleImageUrlChange = (url: string) => {
-    form.setValue("image", url)
-    setImagePreview(url)
-  }
+    form.setValue("image", url);
+    setImagePreview(url);
+  };
 
   const handleChangeImage = () => {
-    setImagePreview(null)
-    form.setValue("image", "")
-  }
+    setImagePreview(null);
+    form.setValue("image", "");
+  };
 
   const addTechnology = () => {
-    const trimmed = newTech.trim()
-    if (!trimmed) return
+    const trimmed = newTech.trim();
+    if (!trimmed) return;
 
-    const currentTechs = form.getValues("technologies")
+    const currentTechs = form.getValues("technologies");
     if (currentTechs.includes(trimmed)) {
-      toast.error("Technology already added")
-      return
+      toast.error("Technology already added");
+      return;
     }
 
     if (currentTechs.length >= 15) {
-      toast.error("Maximum 15 technologies allowed")
-      return
+      toast.error("Maximum 15 technologies allowed");
+      return;
     }
 
-    form.setValue("technologies", [...currentTechs, trimmed])
-    setNewTech("")
-  }
+    form.setValue("technologies", [...currentTechs, trimmed]);
+    setNewTech("");
+  };
 
   const removeTechnology = (tech: string) => {
-    const currentTechs = form.getValues("technologies")
+    const currentTechs = form.getValues("technologies");
     form.setValue(
       "technologies",
       currentTechs.filter((t) => t !== tech),
-    )
-  }
+    );
+  };
 
   const addFeature = () => {
-    const trimmed = newFeature.trim()
-    if (!trimmed) return
+    const trimmed = newFeature.trim();
+    if (!trimmed) return;
 
-    const currentFeatures = form.getValues("keyFeatures")
+    const currentFeatures = form.getValues("keyFeatures");
     if (currentFeatures.length >= 10) {
-      toast.error("Maximum 10 key features allowed")
-      return
+      toast.error("Maximum 10 key features allowed");
+      return;
     }
 
-    form.setValue("keyFeatures", [...currentFeatures, trimmed])
-    setNewFeature("")
-  }
+    form.setValue("keyFeatures", [...currentFeatures, trimmed]);
+    setNewFeature("");
+  };
 
   const removeFeature = (index: number) => {
-    const currentFeatures = form.getValues("keyFeatures")
+    const currentFeatures = form.getValues("keyFeatures");
     form.setValue(
       "keyFeatures",
       currentFeatures.filter((_, i) => i !== index),
-    )
-  }
+    );
+  };
 
   const onSubmit = async (data: ProjectFormData) => {
-    setLoading(true)
+    setLoading(true);
 
     try {
-      const formData = new FormData()
-      formData.append("title", data.title)
-      formData.append("description", data.description)
-      formData.append("image", data.image)
-      formData.append("technologies", JSON.stringify(data.technologies))
-      formData.append("keyFeatures", JSON.stringify(data.keyFeatures))
-      formData.append("demoUrl", data.demoUrl)
-      formData.append("githubUrl", data.githubUrl)
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("description", data.description);
+      formData.append("image", data.image);
+      formData.append("technologies", JSON.stringify(data.technologies));
+      formData.append("keyFeatures", JSON.stringify(data.keyFeatures));
+      formData.append("demoUrl", data.demoUrl);
+      formData.append("githubUrl", data.githubUrl);
 
       if (project?._id) {
-        await updateProject(project._id, formData)
-        toast.success("Project updated successfully!")
+        await updateProject(project._id, formData);
+        toast.success("Project updated successfully!");
       } else {
-        await addProject(formData)
-        toast.success("Project created successfully!")
+        await addProject(formData);
+        toast.success("Project created successfully!");
       }
 
-      router.push("/admin/projects")
-      router.refresh()
+      router.push("/admin/projects");
+      router.refresh();
     } catch (error) {
-      console.error("Error saving project:", error)
-      toast.error("Failed to save project. Please try again.")
+      console.error("Error saving project:", error);
+      toast.error("Failed to save project. Please try again.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <Card className="glass-card border-0">
           <CardHeader>
-            <CardTitle className="text-white text-2xl">{project ? "Edit Project" : "Create New Project"}</CardTitle>
+            <CardTitle className="text-white text-2xl">
+              {project ? "Edit Project" : "Create New Project"}
+            </CardTitle>
             <CardDescription className="text-gray-400">
               {project
                 ? "Update your project details below"
@@ -190,7 +212,11 @@ export function ProjectForm({ project }: ProjectFormProps) {
                 <FormItem>
                   <FormLabel className="text-white">Project Title</FormLabel>
                   <FormControl>
-                    <Input {...field} className="glass-input" placeholder="My Awesome Project" />
+                    <Input
+                      {...field}
+                      className="glass-input"
+                      placeholder="My Awesome Project"
+                    />
                   </FormControl>
                   <FormDescription className="text-gray-500 text-sm">
                     A catchy title for your project (3-100 characters)
@@ -256,8 +282,16 @@ export function ProjectForm({ project }: ProjectFormProps) {
                             <Button
                               type="button"
                               size="sm"
-                              variant={imageInputMode === "upload" ? "default" : "ghost"}
-                              className={imageInputMode === "upload" ? "bg-purple-500 hover:bg-purple-600" : "text-purple-500"}
+                              variant={
+                                imageInputMode === "upload"
+                                  ? "default"
+                                  : "ghost"
+                              }
+                              className={
+                                imageInputMode === "upload"
+                                  ? "bg-purple-500 hover:bg-purple-600"
+                                  : "text-purple-500"
+                              }
                               onClick={() => setImageInputMode("upload")}
                             >
                               <Upload className="w-4 h-4 mr-2" />
@@ -266,8 +300,14 @@ export function ProjectForm({ project }: ProjectFormProps) {
                             <Button
                               type="button"
                               size="sm"
-                              variant={imageInputMode === "url" ? "default" : "ghost"}
-                              className={imageInputMode === "url" ? "bg-purple-500 hover:bg-purple-600" : "text-purple-500"}
+                              variant={
+                                imageInputMode === "url" ? "default" : "ghost"
+                              }
+                              className={
+                                imageInputMode === "url"
+                                  ? "bg-purple-500 hover:bg-purple-600"
+                                  : "text-purple-500"
+                              }
                               onClick={() => setImageInputMode("url")}
                             >
                               Link
@@ -280,7 +320,11 @@ export function ProjectForm({ project }: ProjectFormProps) {
                                 type="button"
                                 variant="outline"
                                 className="flex-1 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 hover:text-purple-500 border-purple-500/50"
-                                onClick={() => document.getElementById("image-upload")?.click()}
+                                onClick={() =>
+                                  document
+                                    .getElementById("image-upload")
+                                    ?.click()
+                                }
                                 disabled={uploading}
                               >
                                 {uploading ? (
@@ -311,7 +355,9 @@ export function ProjectForm({ project }: ProjectFormProps) {
                               className="glass-input"
                               placeholder="https://example.com/image.jpg"
                               type="url"
-                              onChange={(e) => handleImageUrlChange(e.target.value)}
+                              onChange={(e) =>
+                                handleImageUrlChange(e.target.value)
+                              }
                             />
                           )}
                         </>
@@ -344,8 +390,8 @@ export function ProjectForm({ project }: ProjectFormProps) {
                           onChange={(e) => setNewTech(e.target.value)}
                           onKeyPress={(e) => {
                             if (e.key === "Enter") {
-                              e.preventDefault()
-                              addTechnology()
+                              e.preventDefault();
+                              addTechnology();
                             }
                           }}
                           className="glass-input flex-1"
@@ -423,7 +469,9 @@ export function ProjectForm({ project }: ProjectFormProps) {
                               key={index}
                               className="flex items-start gap-3 p-3 rounded-md bg-white/5 border border-white/10 group hover:border-purple-500/30 transition-colors"
                             >
-                              <span className="flex-1 text-sm text-gray-300">{feature}</span>
+                              <span className="flex-1 text-sm text-gray-300">
+                                {feature}
+                              </span>
                               <button
                                 type="button"
                                 onClick={() => removeFeature(index)}
@@ -452,7 +500,12 @@ export function ProjectForm({ project }: ProjectFormProps) {
                 <FormItem>
                   <FormLabel className="text-white">Demo URL</FormLabel>
                   <FormControl>
-                    <Input {...field} className="glass-input" placeholder="https://demo.example.com" type="url" />
+                    <Input
+                      {...field}
+                      className="glass-input"
+                      placeholder="https://demo.example.com"
+                      type="url"
+                    />
                   </FormControl>
                   <FormDescription className="text-gray-500 text-sm">
                     Link to the live demo or deployed version
@@ -476,7 +529,9 @@ export function ProjectForm({ project }: ProjectFormProps) {
                       type="url"
                     />
                   </FormControl>
-                  <FormDescription className="text-gray-500 text-sm">Link to the GitHub repository</FormDescription>
+                  <FormDescription className="text-gray-500 text-sm">
+                    Link to the GitHub repository
+                  </FormDescription>
                   <FormMessage className="text-red-400" />
                 </FormItem>
               )}
@@ -511,5 +566,5 @@ export function ProjectForm({ project }: ProjectFormProps) {
         </Card>
       </form>
     </Form>
-  )
+  );
 }

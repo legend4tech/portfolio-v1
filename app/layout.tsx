@@ -23,7 +23,13 @@ export const metadata: Metadata = {
   },
   description:
     "Am Legend4tech A passionate Computer Scientist and Full-Stack Developer And Web3 Enthusiast with a strong focus on crafting dynamic and user-friendly digital experiences. I specialize in Full-Stack development, blending creativity with performance optimization to build seamless, high-quality web applications. Always eager to learn and push boundaries, I strive to create innovative solutions that make an impact.",
-  keywords: ["technology", "legend", "legend4tech", "web development", "IT services"],
+  keywords: [
+    "technology",
+    "legend",
+    "legend4tech",
+    "web development",
+    "IT services",
+  ],
   authors: [{ name: "Legend4Tech" }],
   creator: "Legend4Tech",
   publisher: "Legend4Tech",
@@ -89,7 +95,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className="custom-scrollbar">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <Providers>
           <main>{children}</main>
           <Toaster position="top-right" closeButton richColors />

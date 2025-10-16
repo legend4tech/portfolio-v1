@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function PRCardSkeleton() {
   return (
@@ -34,5 +34,5 @@ export function PRCardSkeleton() {
         <Skeleton className="h-4 w-20 bg-purple-500/10" />
       </div>
     </div>
-  )
+  );
 }

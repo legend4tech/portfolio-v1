@@ -1,25 +1,27 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { PRCard } from "./PRCard"
-import { PRCardSkeleton } from "./PRCardSkeleton"
-import { Button } from "../ui/button"
-import { Github, ArrowRight, ArrowLeft } from "lucide-react"
-import Link from "next/link"
-import { usePullRequests } from "@/hooks/usePullRequests"
-import { Skeleton } from "@/components/ui/skeleton"
-import Image from "next/image"
+import { motion } from "framer-motion";
+import { PRCard } from "./PRCard";
+import { PRCardSkeleton } from "./PRCardSkeleton";
+import { Button } from "../ui/button";
+import { Github, ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { usePullRequests } from "@/hooks/usePullRequests";
+import { Skeleton } from "@/components/ui/skeleton";
+import Image from "next/image";
 
 export function OpenSourceSection() {
-  const { data: pullRequests = [], isLoading: loading, error } = usePullRequests()
+  const {
+    data: pullRequests = [],
+    isLoading: loading,
+    error,
+  } = usePullRequests();
 
-  const displayedPRs = pullRequests.slice(0, 6)
+  const displayedPRs = pullRequests.slice(0, 6);
 
   return (
     <section id="opensource" className="min-h-screen py-20">
       <div className="container mx-auto px-6">
-       
-
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -30,16 +32,27 @@ export function OpenSourceSection() {
           <div className="flex items-center justify-center gap-5  flex-col">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card">
               <Github className="w-5 h-5 text-purple-400" />
-              <span className="text-sm text-gray-400">Open Source Contributions</span>
+              <span className="text-sm text-gray-400">
+                Open Source Contributions
+              </span>
             </div>
             <div className="glass-card p-3 rounded-xl">
-              <Image src="/onlydust-logo.png" alt="OnlyDust" width={40} height={40} className="object-contain" />
+              <Image
+                src="/onlydust-logo.png"
+                alt="OnlyDust"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
             </div>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold gradient-text">OnlyDust Contributions</h2>
+          <h2 className="text-4xl md:text-5xl font-bold gradient-text">
+            OnlyDust Contributions
+          </h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            My merged pull requests and contributions to open source projects through OnlyDust. Building in public and
-            contributing to the ecosystem.
+            My merged pull requests and contributions to open source projects
+            through OnlyDust. Building in public and contributing to the
+            ecosystem.
           </p>
         </motion.div>
 
@@ -49,7 +62,10 @@ export function OpenSourceSection() {
             {/* Stats Skeleton */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="glass-card p-6 rounded-xl text-center space-y-2">
+                <div
+                  key={i}
+                  className="glass-card p-6 rounded-xl text-center space-y-2"
+                >
                   <Skeleton className="h-10 w-20 mx-auto bg-purple-500/10" />
                   <Skeleton className="h-4 w-32 mx-auto bg-white/5" />
                 </div>
@@ -70,7 +86,9 @@ export function OpenSourceSection() {
           <div className="text-center py-20">
             <div className="glass-card p-8 rounded-xl max-w-md mx-auto">
               <p className="text-red-400 mb-4">
-                {error instanceof Error ? error.message : "Failed to fetch pull requests"}
+                {error instanceof Error
+                  ? error.message
+                  : "Failed to fetch pull requests"}
               </p>
               <Button
                 onClick={() => window.location.reload()}
@@ -93,8 +111,12 @@ export function OpenSourceSection() {
               className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
             >
               <div className="glass-card p-6 rounded-xl text-center">
-                <div className="text-3xl font-bold text-purple-400 mb-2">{pullRequests.length}</div>
-                <div className="text-sm text-gray-400">Merged Pull Requests</div>
+                <div className="text-3xl font-bold text-purple-400 mb-2">
+                  {pullRequests.length}
+                </div>
+                <div className="text-sm text-gray-400">
+                  Merged Pull Requests
+                </div>
               </div>
               <div className="glass-card p-6 rounded-xl text-center">
                 <div className="text-3xl font-bold text-blue-400 mb-2">
@@ -104,7 +126,10 @@ export function OpenSourceSection() {
               </div>
               <div className="glass-card p-6 rounded-xl text-center">
                 <div className="text-3xl font-bold text-green-400 mb-2">
-                  {pullRequests.reduce((acc, pr) => acc + pr.closedIssues.length, 0)}
+                  {pullRequests.reduce(
+                    (acc, pr) => acc + pr.closedIssues.length,
+                    0,
+                  )}
                 </div>
                 <div className="text-sm text-gray-400">Issues Closed</div>
               </div>
@@ -145,5 +170,5 @@ export function OpenSourceSection() {
         )}
       </div>
     </section>
-  )
+  );
 }

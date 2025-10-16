@@ -1,13 +1,20 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import Image from "next/image"
-import Link from "next/link"
-import { ArrowLeft, CodeXml, ExternalLink, Github, Layers, Package } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
+import { useState } from "react";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  ArrowLeft,
+  CodeXml,
+  ExternalLink,
+  Github,
+  Layers,
+  Package,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -15,11 +22,11 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { useRouter } from "next/navigation"
-import { useProjects } from "@/hooks/useProjects"
-import { Skeleton } from "@/components/ui/skeleton"
-import { ErrorState } from "@/components/root/ErrorState"
+} from "@/components/ui/breadcrumb";
+import { useRouter } from "next/navigation";
+import { useProjects } from "@/hooks/useProjects";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ErrorState } from "@/components/root/ErrorState";
 
 /**
  * Project not found fallback component
@@ -28,14 +35,18 @@ function ProjectNotFound() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900/20 via-gray-900 to-blue-900/20 flex items-center justify-center">
       <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold text-purple-400">Project Not Found</h1>
-        <p className="text-gray-400">The project you're looking for doesn't exist.</p>
+        <h1 className="text-4xl font-bold text-purple-400">
+          Project Not Found
+        </h1>
+        <p className="text-gray-400">
+          The project you&apos;re looking for doesn&apos;t exist.
+        </p>
         <Button asChild className="bg-purple-500 hover:bg-purple-600">
           <Link href="/#portfolio">Back to Portfolio</Link>
         </Button>
       </div>
     </div>
-  )
+  );
 }
 
 /**
@@ -76,19 +87,19 @@ function ProjectDetailsSkeleton() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default function ProjectDetailsPage({ id }: { id: string }) {
-  const [isImageLoading, setIsImageLoading] = useState(true)
-  const router = useRouter()
+  const [isImageLoading, setIsImageLoading] = useState(true);
+  const router = useRouter();
 
-  const { data: projects = [], isLoading, error, refetch } = useProjects()
+  const { data: projects = [], isLoading, error, refetch } = useProjects();
 
-  const project = projects.find((p) => p._id === id)
+  const project = projects.find((p) => p._id === id);
 
   if (isLoading) {
-    return <ProjectDetailsSkeleton />
+    return <ProjectDetailsSkeleton />;
   }
 
   if (error) {
@@ -100,11 +111,11 @@ export default function ProjectDetailsPage({ id }: { id: string }) {
           onRetry={() => refetch()}
         />
       </div>
-    )
+    );
   }
 
   if (!project) {
-    return <ProjectNotFound />
+    return <ProjectNotFound />;
   }
 
   return (
@@ -123,13 +134,18 @@ export default function ProjectDetailsPage({ id }: { id: string }) {
 
             <BreadcrumbSeparator>/</BreadcrumbSeparator>
             <BreadcrumbItem>
-              <BreadcrumbLink asChild className="hover:text-purple-400 transition-colors">
+              <BreadcrumbLink
+                asChild
+                className="hover:text-purple-400 transition-colors"
+              >
                 <Link href="/#portfolio">Projects</Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator>/</BreadcrumbSeparator>
             <BreadcrumbItem>
-              <BreadcrumbPage className="text-purple-400">{project.title}</BreadcrumbPage>
+              <BreadcrumbPage className="text-purple-400">
+                {project.title}
+              </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -145,8 +161,12 @@ export default function ProjectDetailsPage({ id }: { id: string }) {
           >
             {/* Title and Description */}
             <div className="space-y-4">
-              <h1 className="text-4xl font-bold gradient-text">{project.title}</h1>
-              <p className="text-gray-400 leading-relaxed">{project.description}</p>
+              <h1 className="text-4xl font-bold gradient-text">
+                {project.title}
+              </h1>
+              <p className="text-gray-400 leading-relaxed">
+                {project.description}
+              </p>
             </div>
 
             {/* Stats */}
@@ -158,7 +178,8 @@ export default function ProjectDetailsPage({ id }: { id: string }) {
                   <CodeXml size={30} />
                 </div>
                 <div className="text-2xl font-bold text-blue-400 text-center xs:text-left">
-                  {project.technologies.length} <p className="text-sm text-gray-400">Total Technology</p>
+                  {project.technologies.length}{" "}
+                  <p className="text-sm text-gray-400">Total Technology</p>
                 </div>
               </div>
 
@@ -179,7 +200,10 @@ export default function ProjectDetailsPage({ id }: { id: string }) {
 
             {/* Action Buttons */}
             <div className="flex gap-4">
-              <Button asChild className="bg-purple-500 hover:bg-purple-600 text-white p-6">
+              <Button
+                asChild
+                className="bg-purple-500 hover:bg-purple-600 text-white p-6"
+              >
                 <Link
                   href={project.demoUrl}
                   className="inline-flex items-center gap-2"
@@ -279,5 +303,5 @@ export default function ProjectDetailsPage({ id }: { id: string }) {
         </div>
       </div>
     </div>
-  )
+  );
 }

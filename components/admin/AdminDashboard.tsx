@@ -1,11 +1,24 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { FolderKanban, Award, Code2, LayoutDashboard, User, LogOut } from "lucide-react"
-import { signOut } from "next-auth/react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  FolderKanban,
+  Award,
+  Code2,
+  LayoutDashboard,
+  User,
+  LogOut,
+} from "lucide-react";
+import { signOut } from "next-auth/react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,16 +26,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 interface AdminDashboardProps {
   user: {
-    name?: string | null
-    email?: string | null
-    image?: string | null
-    avatar?: string | null
-    username?: string | null
-  }
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    avatar?: string | null;
+    username?: string | null;
+  };
 }
 
 /**
@@ -31,11 +44,11 @@ interface AdminDashboardProps {
  */
 export function AdminDashboard({ user }: AdminDashboardProps) {
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: "/admin/login" })
-  }
+    await signOut({ callbackUrl: "/admin/login" });
+  };
 
   // Use custom avatar if available, otherwise fall back to OAuth image
-  const avatarUrl = user.avatar || user.image
+  const avatarUrl = user.avatar || user.image;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900/20 via-gray-900 to-blue-900/20">
@@ -44,9 +57,12 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
         <div className="flex items-center justify-between mb-12">
           <div>
             <h1 className="text-4xl font-bold gradient-text mb-2">
-              Welcome back, {user.username || user.name?.split(" ")[0] || "Admin"}! 👋
+              Welcome back,{" "}
+              {user.username || user.name?.split(" ")[0] || "Admin"}! 👋
             </h1>
-            <p className="text-gray-400 text-lg">Manage your portfolio content and settings</p>
+            <p className="text-gray-400 text-lg">
+              Manage your portfolio content and settings
+            </p>
           </div>
 
           {/* User Menu with Avatar */}
@@ -57,14 +73,20 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
                 className="relative h-14 w-14 rounded-full ring-2 ring-purple-500/50 hover:ring-purple-400"
               >
                 <Avatar className="h-14 w-14">
-                  <AvatarImage src={avatarUrl || undefined} alt={user.name || "Admin"} />
+                  <AvatarImage
+                    src={avatarUrl || undefined}
+                    alt={user.name || "Admin"}
+                  />
                   <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-500 text-white font-semibold text-lg">
                     {user.name?.charAt(0).toUpperCase() || "A"}
                   </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 bg-gray-900 border-gray-800" align="end">
+            <DropdownMenuContent
+              className="w-56 bg-gray-900 border-gray-800"
+              align="end"
+            >
               <DropdownMenuLabel className="text-white">
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium">{user.name}</p>
@@ -72,7 +94,10 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-gray-800" />
-              <DropdownMenuItem asChild className="text-gray-300 hover:text-white hover:bg-white/5 cursor-pointer">
+              <DropdownMenuItem
+                asChild
+                className="text-gray-300 hover:text-white hover:bg-white/5 cursor-pointer"
+              >
                 <Link href="/admin/profile">
                   <User className="w-4 h-4 mr-2" />
                   Profile Settings
@@ -120,7 +145,9 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
                 <Award className="w-7 h-7 text-blue-400" />
               </div>
               <CardTitle className="text-white text-xl">Certificates</CardTitle>
-              <CardDescription className="text-gray-400">Manage your certifications and achievements</CardDescription>
+              <CardDescription className="text-gray-400">
+                Manage your certifications and achievements
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <Button
@@ -139,7 +166,9 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
                 <Code2 className="w-7 h-7 text-cyan-400" />
               </div>
               <CardTitle className="text-white text-xl">Tech Stack</CardTitle>
-              <CardDescription className="text-gray-400">Manage your technical skills and tools</CardDescription>
+              <CardDescription className="text-gray-400">
+                Manage your technical skills and tools
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <Button
@@ -157,8 +186,12 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
               <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                 <LayoutDashboard className="w-7 h-7 text-green-400" />
               </div>
-              <CardTitle className="text-white text-xl">View Portfolio</CardTitle>
-              <CardDescription className="text-gray-400">Preview your portfolio as visitors see it</CardDescription>
+              <CardTitle className="text-white text-xl">
+                View Portfolio
+              </CardTitle>
+              <CardDescription className="text-gray-400">
+                Preview your portfolio as visitors see it
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <Button
@@ -173,5 +206,5 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

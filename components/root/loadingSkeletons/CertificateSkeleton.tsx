@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
 
 /**
  * Loading skeleton for certificate cards
@@ -21,7 +21,7 @@ export function CertificateSkeleton() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 /**
@@ -35,5 +35,5 @@ export function CertificatesGridSkeleton({ count = 4 }: { count?: number }) {
         <CertificateSkeleton key={i} />
       ))}
     </div>
-  )
+  );
 }

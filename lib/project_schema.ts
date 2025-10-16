@@ -1,11 +1,14 @@
-import { z } from "zod"
+import { z } from "zod";
 
 /**
  * Zod schema for project validation
  * Ensures all required fields are present and properly formatted
  */
 export const projectSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters").max(100, "Title must be less than 100 characters"),
+  title: z
+    .string()
+    .min(3, "Title must be at least 3 characters")
+    .max(100, "Title must be less than 100 characters"),
 
   description: z
     .string()
@@ -27,6 +30,6 @@ export const projectSchema = z.object({
   demoUrl: z.string().url("Must be a valid URL"),
 
   githubUrl: z.string().url("Must be a valid URL"),
-})
+});
 
-export type ProjectFormData = z.infer<typeof projectSchema>
+export type ProjectFormData = z.infer<typeof projectSchema>;

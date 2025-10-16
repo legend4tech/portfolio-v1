@@ -1,65 +1,72 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { toast } from "sonner"
-import { Loader2, Upload, LinkIcon, X } from "lucide-react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Image from "next/image"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { toast } from "sonner";
+import { Loader2, Upload, LinkIcon, X } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Image from "next/image";
 
 /**
  * Setup Form Component
  * Creates the first admin user with avatar upload
  */
 export function SetupForm() {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-  const [uploadMode, setUploadMode] = useState<"upload" | "url">("upload")
-  const [avatarPreview, setAvatarPreview] = useState<string>("")
-  const [isUploading, setIsUploading] = useState(false)
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [uploadMode, setUploadMode] = useState<"upload" | "url">("upload");
+  const [avatarPreview, setAvatarPreview] = useState<string>("");
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleImageUpload = async (file: File) => {
-    setIsUploading(true)
+    setIsUploading(true);
     try {
-      const formData = new FormData()
-      formData.append("file", file)
+      const formData = new FormData();
+      formData.append("file", file);
 
       const response = await fetch("/api/upload", {
         method: "POST",
         body: formData,
-      })
+      });
 
-      if (!response.ok) throw new Error("Upload failed")
+      if (!response.ok) throw new Error("Upload failed");
 
-      const data = await response.json()
-      setAvatarPreview(data.fileUrl || data.url)
-      toast.success("Avatar uploaded successfully!")
-      return data.fileUrl || data.url
+      const data = await response.json();
+      setAvatarPreview(data.fileUrl || data.url);
+      toast.success("Avatar uploaded successfully!");
+      return data.fileUrl || data.url;
     } catch (error) {
-      toast.error("Failed to upload avatar")
-      throw error
+      toast.error("Failed to upload avatar");
+      throw error;
     } finally {
-      setIsUploading(false)
+      setIsUploading(false);
     }
-  }
+  };
 
   const clearAvatar = () => {
-    setAvatarPreview("")
-  }
+    setAvatarPreview("");
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
-    const formData = new FormData(e.currentTarget)
+    const formData = new FormData(e.currentTarget);
 
-    const avatarValue = avatarPreview && avatarPreview.trim() !== "" ? avatarPreview : undefined
+    const avatarValue =
+      avatarPreview && avatarPreview.trim() !== "" ? avatarPreview : undefined;
 
     const data = {
       name: formData.get("name") as string,
@@ -68,28 +75,32 @@ export function SetupForm() {
       password: formData.get("password") as string,
       avatar: avatarValue,
       secretPin: formData.get("secretPin") as string,
-    }
+    };
 
     try {
       const response = await fetch("/api/admin/setup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
-      })
+      });
 
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.message || "Setup failed")
+        const error = await response.json();
+        throw new Error(error.message || "Setup failed");
       }
 
-      toast.success("Admin account created successfully!")
-      router.push("/admin/login")
+      toast.success("Admin account created successfully!");
+      router.push("/admin/login");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to create admin account")
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to create admin account",
+      );
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Card className="w-full max-w-2xl border-purple-500/20 bg-gray-900/95 backdrop-blur-sm shadow-2xl">
@@ -104,10 +115,15 @@ export function SetupForm() {
       <CardContent className="px-8 pb-8">
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="space-y-4">
-            <Label className="text-white font-semibold text-base">Profile Avatar</Label>
+            <Label className="text-white font-semibold text-base">
+              Profile Avatar
+            </Label>
 
             {!avatarPreview ? (
-              <Tabs value={uploadMode} onValueChange={(v) => setUploadMode(v as "upload" | "url")}>
+              <Tabs
+                value={uploadMode}
+                onValueChange={(v) => setUploadMode(v as "upload" | "url")}
+              >
                 <TabsList className="grid w-full grid-cols-2 bg-gray-800/80">
                   <TabsTrigger
                     value="upload"
@@ -130,8 +146,8 @@ export function SetupForm() {
                     type="file"
                     accept="image/*"
                     onChange={(e) => {
-                      const file = e.target.files?.[0]
-                      if (file) handleImageUpload(file)
+                      const file = e.target.files?.[0];
+                      if (file) handleImageUpload(file);
                     }}
                     disabled={isUploading}
                     className="bg-gray-800/80 border-gray-700 text-white file:bg-purple-500/20 file:text-purple-400 file:border-0 file:mr-4 file:px-4 file:py-2 file:rounded-md file:font-medium hover:file:bg-purple-500/30 cursor-pointer h-12"
@@ -150,7 +166,12 @@ export function SetupForm() {
             ) : (
               <div className="flex flex-col items-center gap-4 p-6 bg-gray-800/50 rounded-lg border border-gray-700">
                 <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-purple-500 shadow-lg shadow-purple-500/20">
-                  <Image src={avatarPreview || "/placeholder.svg"} alt="Avatar preview" fill className="object-cover" />
+                  <Image
+                    src={avatarPreview || "/placeholder.svg"}
+                    alt="Avatar preview"
+                    fill
+                    className="object-cover"
+                  />
                 </div>
                 <Button
                   type="button"
@@ -221,7 +242,9 @@ export function SetupForm() {
               placeholder="••••••••"
               className="bg-gray-800/80 border-gray-700 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500 h-12"
             />
-            <p className="text-sm text-gray-400">Must be at least 6 characters</p>
+            <p className="text-sm text-gray-400">
+              Must be at least 6 characters
+            </p>
           </div>
 
           <div className="space-y-3">
@@ -255,5 +278,5 @@ export function SetupForm() {
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }

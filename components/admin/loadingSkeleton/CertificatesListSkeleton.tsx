@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 /**
  * Loading skeleton for certificates list
@@ -41,5 +41,5 @@ export function CertificatesListSkeleton() {
         </Card>
       ))}
     </div>
-  )
+  );
 }

@@ -1,10 +1,10 @@
-import { About } from "@/components/root/About"
-import { Contact } from "@/components/root/Contact"
-import { Footer } from "@/components/root/Footer"
-import { Hero } from "@/components/root/Hero"
-import { Navbar } from "@/components/root/Navbar"
-import { Portfolio } from "@/components/root/Portfolio"
-import { OpenSourceSection } from "@/components/opensource/OpenSourceSection"
+import { About } from "@/components/root/About";
+import { Contact } from "@/components/root/Contact";
+import { Footer } from "@/components/root/Footer";
+import { Hero } from "@/components/root/Hero";
+import { Navbar } from "@/components/root/Navbar";
+import { Portfolio } from "@/components/root/Portfolio";
+import { OpenSourceSection } from "@/components/opensource/OpenSourceSection";
 
 export default function Home() {
   return (
@@ -29,5 +29,5 @@ export default function Home() {
       </main>
       <Footer />
     </div>
-  )
+  );
 }

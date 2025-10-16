@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Award } from "lucide-react"
-import { useCertificates } from "@/hooks/useCertificates"
-import { CounterAnimation } from "./CounterAnimation"
+import { motion } from "framer-motion";
+import { Award } from "lucide-react";
+import { useCertificates } from "@/hooks/useCertificates";
+import { CounterAnimation } from "./CounterAnimation";
 
 export function CertificateStat() {
-  const { data: certificates, isLoading } = useCertificates()
-  const certificateCount = certificates?.length || 0
+  const { data: certificates, isLoading } = useCertificates();
+  const certificateCount = certificates?.length || 0;
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -18,10 +18,14 @@ export function CertificateStat() {
         duration: 0.5,
       },
     },
-  }
+  };
 
   return (
-    <motion.div variants={itemVariants} whileHover={{ y: -5 }} className="glass-card rounded-xl p-6 space-y-4">
+    <motion.div
+      variants={itemVariants}
+      whileHover={{ y: -5 }}
+      className="glass-card rounded-xl p-6 space-y-4"
+    >
       <div className="flex justify-between items-start">
         <div className="p-3 glass-card rounded-full">
           <Award className="w-6 h-6" />
@@ -39,5 +43,5 @@ export function CertificateStat() {
         <p className="text-sm text-gray-400">Professional skills validated</p>
       </div>
     </motion.div>
-  )
+  );
 }

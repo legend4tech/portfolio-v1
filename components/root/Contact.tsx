@@ -1,16 +1,10 @@
 "use client";
 
-import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
 import { ContactForm } from "./ContactForm";
 import { CommentsSection } from "./CommentsSection";
 
 export function Contact() {
-  const [ref, inView] = useInView({
-    threshold: 0.1,
-    triggerOnce: true,
-  });
-
   return (
     <section id="contact" className="min-h-screen py-20">
       <div className="container mx-auto px-6">
@@ -29,7 +23,7 @@ export function Contact() {
         </motion.div>
 
         {/* Main Content Grid */}
-        <div ref={ref} className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {/* Left Column - Contact Form */}
           <ContactForm />
 

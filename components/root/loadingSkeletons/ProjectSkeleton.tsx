@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
 
 /**
  * Loading skeleton for project cards
@@ -27,7 +27,7 @@ export function ProjectSkeleton() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 /**
@@ -41,5 +41,5 @@ export function ProjectsGridSkeleton({ count = 4 }: { count?: number }) {
         <ProjectSkeleton key={i} />
       ))}
     </div>
-  )
+  );
 }

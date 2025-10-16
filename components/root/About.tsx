@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Download, ExternalLink, Code2, Globe } from "lucide-react"
-import { Typewriter } from "react-simple-typewriter"
-import { GlowingImage } from "./GlowingImage"
-import { handleDownloadResume } from "@/lib/handleDownloadResume"
-import { CertificateStat } from "./CertificateStat"
+import { motion } from "framer-motion";
+import { Download, ExternalLink, Code2, Globe } from "lucide-react";
+import { Typewriter } from "react-simple-typewriter";
+import { GlowingImage } from "./GlowingImage";
+import { handleDownloadResume } from "@/lib/handleDownloadResume";
+import { CertificateStat } from "./CertificateStat";
 
-const currentYear = new Date().getFullYear()
+const currentYear = new Date().getFullYear();
 
 // Stats data for the cards (excluding certificates - will be rendered separately)
 const stats = [
@@ -23,7 +23,7 @@ const stats = [
     title: "YEARS OF EXPERIENCE",
     subtitle: "Continuous learning journey",
   },
-]
+];
 
 export function About() {
   // Animation variants for staggered children
@@ -35,7 +35,7 @@ export function About() {
         staggerChildren: 0.2,
       },
     },
-  }
+  };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -46,7 +46,7 @@ export function About() {
         duration: 0.5,
       },
     },
-  }
+  };
 
   return (
     <section id="about" className="min-h-screen py-20 hero-gradient">
@@ -93,16 +93,26 @@ export function About() {
               </h3>
             </motion.div>
 
-            <motion.p variants={itemVariants} className="text-gray-400 leading-relaxed">
-              A passionate Computer Scientist and Full-Stack Developer with a strong focus on crafting dynamic and
-              user-friendly digital experiences. I specialize in Full-Stack development, blending creativity with
-              performance optimization to build seamless, high-quality web applications. I&lsquo;m also a Web3 developer
-              contributing to the decentralized web through open-source platforms like OnlyDust. I&lsquo;ve actively
-              contributed to ecosystems such as Starknet, continuously pushing boundaries and creating innovative
-              solutions that make an impact. Always eager to learn and grow, I strive to build technology that matters.
+            <motion.p
+              variants={itemVariants}
+              className="text-gray-400 leading-relaxed"
+            >
+              A passionate Computer Scientist and Full-Stack Developer with a
+              strong focus on crafting dynamic and user-friendly digital
+              experiences. I specialize in Full-Stack development, blending
+              creativity with performance optimization to build seamless,
+              high-quality web applications. I&lsquo;m also a Web3 developer
+              contributing to the decentralized web through open-source
+              platforms like OnlyDust. I&lsquo;ve actively contributed to
+              ecosystems such as Starknet, continuously pushing boundaries and
+              creating innovative solutions that make an impact. Always eager to
+              learn and grow, I strive to build technology that matters.
             </motion.p>
 
-            <motion.div variants={itemVariants} className="flex flex-col xxs:flex-row gap-4">
+            <motion.div
+              variants={itemVariants}
+              className="flex flex-col xxs:flex-row gap-4"
+            >
               {/* Download Resume Button */}
               <button
                 onClick={handleDownloadResume}
@@ -129,7 +139,12 @@ export function About() {
             viewport={{ once: true }}
             className="relative"
           >
-            <GlowingImage src="/profile.jpg" alt="Profile" width={400} height={400} />
+            <GlowingImage
+              src="/profile.jpg"
+              alt="Profile"
+              width={400}
+              height={400}
+            />
           </motion.div>
         </div>
 
@@ -142,7 +157,11 @@ export function About() {
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {/* First stat card */}
-          <motion.div variants={itemVariants} whileHover={{ y: -5 }} className="glass-card rounded-xl p-6 space-y-4">
+          <motion.div
+            variants={itemVariants}
+            whileHover={{ y: -5 }}
+            className="glass-card rounded-xl p-6 space-y-4"
+          >
             <div className="flex justify-between items-start">
               <div className="p-3 glass-card rounded-full">{stats[0].icon}</div>
               <span className="text-4xl font-bold">{stats[0].number}</span>
@@ -158,7 +177,11 @@ export function About() {
           </motion.div>
 
           {/* Second stat card */}
-          <motion.div variants={itemVariants} whileHover={{ y: -5 }} className="glass-card rounded-xl p-6 space-y-4">
+          <motion.div
+            variants={itemVariants}
+            whileHover={{ y: -5 }}
+            className="glass-card rounded-xl p-6 space-y-4"
+          >
             <div className="flex justify-between items-start">
               <div className="p-3 glass-card rounded-full">{stats[1].icon}</div>
               <span className="text-4xl font-bold">{stats[1].number}</span>
@@ -171,5 +194,5 @@ export function About() {
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

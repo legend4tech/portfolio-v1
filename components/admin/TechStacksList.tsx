@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import Image from "next/image"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Edit, Trash2, Sparkles } from "lucide-react"
-import type { DBTechStack } from "@/types/portfolioTypes"
-import { useDeleteTechStack } from "@/hooks/useDeleteTechStack"
-import { useTechStack } from "@/hooks/useTechStack"
-import { Badge } from "@/components/ui/badge"
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Edit, Trash2, Sparkles } from "lucide-react";
+import type { DBTechStack } from "@/types/portfolioTypes";
+import { useDeleteTechStack } from "@/hooks/useDeleteTechStack";
+import { useTechStack } from "@/hooks/useTechStack";
+import { Badge } from "@/components/ui/badge";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,10 +18,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import { useState } from "react"
-import { TechStackListSkeleton } from "@/components/admin/loadingSkeleton/TechstackListSkeleton"
-import { ErrorState } from "@/components/root/ErrorState"
+} from "@/components/ui/alert-dialog";
+import { useState } from "react";
+import { TechStackListSkeleton } from "@/components/admin/loadingSkeleton/TechstackListSkeleton";
+import { ErrorState } from "@/components/root/ErrorState";
 
 /**
  * Tech Stacks List Component
@@ -29,13 +29,16 @@ import { ErrorState } from "@/components/root/ErrorState"
  * Uses React Query hook for data fetching with loading and error states
  */
 export function TechStacksList() {
-  const { data: techStacks = [], isLoading, error, refetch } = useTechStack()
-  const deleteTechStack = useDeleteTechStack()
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [techToDelete, setTechToDelete] = useState<{ id: string; name: string } | null>(null)
+  const { data: techStacks = [], isLoading, error, refetch } = useTechStack();
+  const deleteTechStack = useDeleteTechStack();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [techToDelete, setTechToDelete] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
   if (isLoading) {
-    return <TechStackListSkeleton />
+    return <TechStackListSkeleton />;
   }
 
   if (error) {
@@ -45,38 +48,38 @@ export function TechStacksList() {
         message="There was an error loading your tech stack. Please try again."
         onRetry={() => refetch()}
       />
-    )
+    );
   }
 
   // Group tech stacks by category
   const groupedTechStacks = techStacks.reduce(
     (acc, tech) => {
       if (!acc[tech.category]) {
-        acc[tech.category] = []
+        acc[tech.category] = [];
       }
-      acc[tech.category].push(tech)
-      return acc
+      acc[tech.category].push(tech);
+      return acc;
     },
     {} as Record<string, DBTechStack[]>,
-  )
+  );
 
   // Sort each category by order
   Object.keys(groupedTechStacks).forEach((category) => {
-    groupedTechStacks[category].sort((a, b) => a.order - b.order)
-  })
+    groupedTechStacks[category].sort((a, b) => a.order - b.order);
+  });
 
   const handleDelete = (id: string, name: string) => {
-    setTechToDelete({ id, name })
-    setDeleteDialogOpen(true)
-  }
+    setTechToDelete({ id, name });
+    setDeleteDialogOpen(true);
+  };
 
   const confirmDelete = () => {
     if (techToDelete) {
-      deleteTechStack.mutate(techToDelete.id)
-      setDeleteDialogOpen(false)
-      setTechToDelete(null)
+      deleteTechStack.mutate(techToDelete.id);
+      setDeleteDialogOpen(false);
+      setTechToDelete(null);
     }
-  }
+  };
 
   if (techStacks.length === 0) {
     return (
@@ -86,9 +89,12 @@ export function TechStacksList() {
           <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center mx-auto mb-6 backdrop-blur-sm border border-purple-500/20 shadow-lg shadow-purple-500/10">
             <Sparkles className="w-12 h-12 text-purple-400" />
           </div>
-          <h3 className="text-2xl font-bold text-white mb-3">No Tech Stack Yet</h3>
+          <h3 className="text-2xl font-bold text-white mb-3">
+            No Tech Stack Yet
+          </h3>
           <p className="text-gray-400 mb-8 max-w-md mx-auto text-lg">
-            Start building your tech stack showcase by adding your first technology
+            Start building your tech stack showcase by adding your first
+            technology
           </p>
           <Button
             asChild
@@ -102,7 +108,7 @@ export function TechStacksList() {
           </Button>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -113,7 +119,9 @@ export function TechStacksList() {
             {/* Category Header */}
             <div className="flex items-center gap-6">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-              <h3 className="text-3xl font-bold gradient-text tracking-tight px-6">{category}</h3>
+              <h3 className="text-3xl font-bold gradient-text tracking-tight px-6">
+                {category}
+              </h3>
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
             </div>
 
@@ -198,10 +206,15 @@ export function TechStacksList() {
         <AlertDialogContent className="glass-card border-0 bg-black/90 backdrop-blur-xl">
           <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 via-transparent to-red-500/5 rounded-lg" />
           <AlertDialogHeader className="relative">
-            <AlertDialogTitle className="text-2xl font-bold text-white">Delete Tech Stack</AlertDialogTitle>
+            <AlertDialogTitle className="text-2xl font-bold text-white">
+              Delete Tech Stack
+            </AlertDialogTitle>
             <AlertDialogDescription className="text-gray-300 text-base">
-              Are you sure you want to delete <span className="font-semibold text-white">"{techToDelete?.name}"</span>?
-              This action cannot be undone.
+              Are you sure you want to delete{" "}
+              <span className="font-semibold text-white">
+                &quot;{techToDelete?.name}&quot;
+              </span>
+              ? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="relative">
@@ -218,5 +231,5 @@ export function TechStacksList() {
         </AlertDialogContent>
       </AlertDialog>
     </>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { getDb } from "@/lib/mongodb"
+import { getDb } from "@/lib/mongodb";
 
 /**
  * Server-side utilities for admin operations
@@ -11,12 +11,12 @@ import { getDb } from "@/lib/mongodb"
  */
 export async function checkAdminExists(): Promise<boolean> {
   try {
-    const db = await getDb()
-    const adminExists = await db.collection("users").findOne({ role: "admin" })
-    return !!adminExists
+    const db = await getDb();
+    const adminExists = await db.collection("users").findOne({ role: "admin" });
+    return !!adminExists;
   } catch (error) {
-    console.error("Error checking admin existence:", error)
-    return false
+    console.error("Error checking admin existence:", error);
+    return false;
   }
 }
 
@@ -27,10 +27,10 @@ export async function checkAdminExists(): Promise<boolean> {
  */
 export async function getAdminByEmail(email: string) {
   try {
-    const db = await getDb()
-    return await db.collection("users").findOne({ email, role: "admin" })
+    const db = await getDb();
+    return await db.collection("users").findOne({ email, role: "admin" });
   } catch (error) {
-    console.error("Error fetching admin:", error)
-    return null
+    console.error("Error fetching admin:", error);
+    return null;
   }
 }

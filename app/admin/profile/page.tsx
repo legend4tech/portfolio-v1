@@ -1,16 +1,16 @@
-import { auth } from "@/auth"
-import { redirect } from "next/navigation"
-import { ProfileForm } from "@/components/admin/ProfileForm"
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+import { ProfileForm } from "@/components/admin/ProfileForm";
 
 /**
  * Admin Profile Page
  * Allows admin to update their profile details
  */
 export default async function ProfilePage() {
-  const session = await auth()
+  const session = await auth();
 
   if (!session?.user) {
-    redirect("/admin/login")
+    redirect("/admin/login");
   }
 
   return (
@@ -19,5 +19,5 @@ export default async function ProfilePage() {
         <ProfileForm user={session.user} />
       </div>
     </div>
-  )
+  );
 }

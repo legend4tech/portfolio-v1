@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { AlertCircle, RefreshCw } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AlertCircle, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 /**
  * Error state component for displaying fetch errors
  * Provides user-friendly error messages and retry functionality
  */
 interface ErrorStateProps {
-  title?: string
-  message?: string
-  onRetry?: () => void
+  title?: string;
+  message?: string;
+  onRetry?: () => void;
 }
 
 export function ErrorState({
@@ -23,8 +23,12 @@ export function ErrorState({
     <div className="flex items-center justify-center min-h-[400px] p-6">
       <Alert className="max-w-md bg-destructive/10 border-destructive/50">
         <AlertCircle className="h-5 w-5 text-destructive" />
-        <AlertTitle className="text-lg font-semibold text-destructive">{title}</AlertTitle>
-        <AlertDescription className="mt-2 text-muted-foreground">{message}</AlertDescription>
+        <AlertTitle className="text-lg font-semibold text-destructive">
+          {title}
+        </AlertTitle>
+        <AlertDescription className="mt-2 text-muted-foreground">
+          {message}
+        </AlertDescription>
         {onRetry && (
           <Button
             onClick={onRetry}
@@ -37,14 +41,17 @@ export function ErrorState({
         )}
       </Alert>
     </div>
-  )
+  );
 }
 
 /**
  * Inline error state for smaller error displays
  * Used within tabs or sections
  */
-export function InlineErrorState({ message = "Failed to load data", onRetry }: Omit<ErrorStateProps, "title">) {
+export function InlineErrorState({
+  message = "Failed to load data",
+  onRetry,
+}: Omit<ErrorStateProps, "title">) {
   return (
     <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
       <AlertCircle className="h-12 w-12 text-destructive mb-4" />
@@ -61,5 +68,5 @@ export function InlineErrorState({ message = "Failed to load data", onRetry }: O
         </Button>
       )}
     </div>
-  )
+  );
 }

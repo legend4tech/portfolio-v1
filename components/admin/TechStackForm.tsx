@@ -1,32 +1,59 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Loader2, Upload, Link as LinkIcon, Sparkles } from "lucide-react"
-import { addTechStack, updateTechStack } from "@/app/actions/techstack"
-import type { DBTechStack } from "@/types/portfolioTypes"
-import { techStackSchema, type TechStackFormData } from "@/lib/techstack_schema"
-import { toast } from "sonner"
-import Image from "next/image"
+import type React from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Loader2, Upload, Link as LinkIcon, Sparkles } from "lucide-react";
+import { addTechStack, updateTechStack } from "@/app/actions/techstack";
+import type { DBTechStack } from "@/types/portfolioTypes";
+import {
+  techStackSchema,
+  type TechStackFormData,
+} from "@/lib/techstack_schema";
+import { toast } from "sonner";
+import Image from "next/image";
 
 interface TechStackFormProps {
-  techStack?: DBTechStack
+  techStack?: DBTechStack;
 }
 
 export function TechStackForm({ techStack }: TechStackFormProps) {
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [uploading, setUploading] = useState(false)
-  const [iconPreview, setIconPreview] = useState<string | null>(techStack?.icon || null)
-  const [iconInputMode, setIconInputMode] = useState<"upload" | "url">("upload")
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [iconPreview, setIconPreview] = useState<string | null>(
+    techStack?.icon || null,
+  );
+  const [iconInputMode, setIconInputMode] = useState<"upload" | "url">(
+    "upload",
+  );
 
   const form = useForm<TechStackFormData>({
     resolver: zodResolver(techStackSchema),
@@ -36,76 +63,78 @@ export function TechStackForm({ techStack }: TechStackFormProps) {
       category: techStack?.category || "Frontend",
       order: techStack?.order || 0,
     },
-  })
+  });
 
   const handleIconUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const file = e.target.files?.[0];
+    if (!file) return;
 
     if (file.size > 2 * 1024 * 1024) {
-      toast.error("File size must be less than 2MB")
-      return
+      toast.error("File size must be less than 2MB");
+      return;
     }
 
-    setUploading(true)
+    setUploading(true);
     try {
-      const formData = new FormData()
-      formData.append("file", file)
+      const formData = new FormData();
+      formData.append("file", file);
 
       const response = await fetch("/api/upload", {
         method: "POST",
         body: formData,
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to upload icon")
+        throw new Error(data.error || "Failed to upload icon");
       }
 
-      form.setValue("icon", data.fileUrl)
-      setIconPreview(data.fileUrl)
-      toast.success("Icon uploaded successfully!")
+      form.setValue("icon", data.fileUrl);
+      setIconPreview(data.fileUrl);
+      toast.success("Icon uploaded successfully!");
     } catch (error) {
-      console.error("Error uploading icon:", error)
-      toast.error(error instanceof Error ? error.message : "Failed to upload icon")
+      console.error("Error uploading icon:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to upload icon",
+      );
     } finally {
-      setUploading(false)
+      setUploading(false);
     }
-  }
+  };
 
   const handleIconUrlChange = (url: string) => {
-    form.setValue("icon", url)
-    setIconPreview(url)
-  }
+    form.setValue("icon", url);
+    setIconPreview(url);
+  };
 
   const onSubmit = async (data: TechStackFormData) => {
-    setLoading(true)
+    setLoading(true);
 
     try {
-      const formData = new FormData()
-      formData.append("name", data.name)
-      formData.append("icon", data.icon)
-      formData.append("category", data.category)
-      formData.append("order", data.order.toString())
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("icon", data.icon);
+      formData.append("category", data.category);
+      formData.append("order", data.order.toString());
 
       if (techStack?._id) {
-        await updateTechStack(techStack._id, formData)
-        toast.success("Tech stack updated successfully!")
+        await updateTechStack(techStack._id, formData);
+        toast.success("Tech stack updated successfully!");
       } else {
-        await addTechStack(formData)
-        toast.success("Tech stack created successfully!")
+        await addTechStack(formData);
+        toast.success("Tech stack created successfully!");
       }
 
-      router.push("/admin/techstack")
-      router.refresh()
+      router.push("/admin/techstack");
+      router.refresh();
     } catch (error) {
-      console.error("Error saving tech stack:", error)
-      toast.error("Failed to save tech stack. Please try again.")
+      console.error("Error saving tech stack:", error);
+      toast.error("Failed to save tech stack. Please try again.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <Form {...form}>
@@ -134,7 +163,9 @@ export function TechStackForm({ techStack }: TechStackFormProps) {
               name="icon"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-white text-lg font-semibold">Technology Icon</FormLabel>
+                  <FormLabel className="text-white text-lg font-semibold">
+                    Technology Icon
+                  </FormLabel>
                   <FormControl>
                     <div className="space-y-6">
                       {/* Icon Preview - Larger and more prominent */}
@@ -156,10 +187,12 @@ export function TechStackForm({ techStack }: TechStackFormProps) {
                         <Button
                           type="button"
                           size="sm"
-                          variant={iconInputMode === "upload" ? "default" : "ghost"}
+                          variant={
+                            iconInputMode === "upload" ? "default" : "ghost"
+                          }
                           className={
-                            iconInputMode === "upload" 
-                              ? "bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 shadow-lg" 
+                            iconInputMode === "upload"
+                              ? "bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 shadow-lg"
                               : "text-purple-400 hover:text-purple-300 hover:bg-white/5"
                           }
                           onClick={() => setIconInputMode("upload")}
@@ -170,10 +203,12 @@ export function TechStackForm({ techStack }: TechStackFormProps) {
                         <Button
                           type="button"
                           size="sm"
-                          variant={iconInputMode === "url" ? "default" : "ghost"}
+                          variant={
+                            iconInputMode === "url" ? "default" : "ghost"
+                          }
                           className={
-                            iconInputMode === "url" 
-                              ? "bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 shadow-lg" 
+                            iconInputMode === "url"
+                              ? "bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 shadow-lg"
                               : "text-purple-400 hover:text-purple-300 hover:bg-white/5"
                           }
                           onClick={() => setIconInputMode("url")}
@@ -189,7 +224,9 @@ export function TechStackForm({ techStack }: TechStackFormProps) {
                           <Button
                             type="button"
                             className="flex-1 bg-white/5 hover:bg-white/10 text-white hover:text-purple-400 border-white/10 h-12 shadow-lg"
-                            onClick={() => document.getElementById("icon-upload")?.click()}
+                            onClick={() =>
+                              document.getElementById("icon-upload")?.click()
+                            }
                             disabled={uploading}
                           >
                             {uploading ? (
@@ -244,9 +281,15 @@ export function TechStackForm({ techStack }: TechStackFormProps) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-white font-semibold">Technology Name</FormLabel>
+                  <FormLabel className="text-white font-semibold">
+                    Technology Name
+                  </FormLabel>
                   <FormControl>
-                    <Input {...field} className="glass-input h-12 text-base" placeholder="React JS" />
+                    <Input
+                      {...field}
+                      className="glass-input h-12 text-base"
+                      placeholder="React JS"
+                    />
                   </FormControl>
                   <FormDescription className="text-gray-400">
                     The name of the technology (2-50 characters)
@@ -264,8 +307,13 @@ export function TechStackForm({ techStack }: TechStackFormProps) {
                 name="category"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-white font-semibold">Category</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormLabel className="text-white font-semibold">
+                      Category
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger className="glass-input h-12">
                           <SelectValue placeholder="Select a category" />
@@ -318,7 +366,9 @@ export function TechStackForm({ techStack }: TechStackFormProps) {
                 name="order"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-white font-semibold">Display Order</FormLabel>
+                    <FormLabel className="text-white font-semibold">
+                      Display Order
+                    </FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -367,5 +417,5 @@ export function TechStackForm({ techStack }: TechStackFormProps) {
         </Card>
       </form>
     </Form>
-  )
+  );
 }

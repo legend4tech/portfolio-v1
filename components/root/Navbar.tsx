@@ -1,31 +1,34 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
-import { Link as ScrollLink } from "react-scroll"
-import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X } from "lucide-react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { useState } from "react";
+import Image from "next/image";
+import { Link as ScrollLink } from "react-scroll";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 // Navigation items
-const navItems = ["Home", "About", "OpenSource", "Portfolio", "Contact"]
+const navItems = ["Home", "About", "OpenSource", "Portfolio", "Contact"];
 
 export function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const pathname = usePathname()
-  const isHomePage = pathname === "/"
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  const closeMenu = () => setIsMenuOpen(false)
+  const closeMenu = () => setIsMenuOpen(false);
 
   return (
     <nav className="fixed w-full z-50 bg-gray-900/30 backdrop-blur-md">
       <div className="container mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Link href="/" className="relative flex items-center cursor-pointer group">
+          <Link
+            href="/"
+            className="relative flex items-center cursor-pointer group"
+          >
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -104,7 +107,7 @@ export function Navbar() {
         )}
       </AnimatePresence>
     </nav>
-  )
+  );
 }
 
 // NavItem component for desktop navigation
@@ -122,7 +125,7 @@ function NavItem({ item, isHomePage }: { item: string; isHomePage: boolean }) {
       >
         {item}
       </ScrollLink>
-    )
+    );
   }
 
   return (
@@ -132,5 +135,5 @@ function NavItem({ item, isHomePage }: { item: string; isHomePage: boolean }) {
     >
       {item}
     </Link>
-  )
+  );
 }

@@ -1,32 +1,46 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import Image from "next/image"
-import { PRCard } from "./PRCard"
-import { PRCardSkeleton } from "./PRCardSkeleton"
-import { Button } from "../ui/button"
-import { Github, Filter, Calendar, GitBranch, TrendingUp, ArrowLeft } from "lucide-react"
-import Link from "next/link"
-import { Skeleton } from "../ui/skeleton"
-import { usePullRequests } from "@/hooks/usePullRequests"
+import { useState } from "react";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { PRCard } from "./PRCard";
+import { PRCardSkeleton } from "./PRCardSkeleton";
+import { Button } from "../ui/button";
+import {
+  Github,
+  Filter,
+  Calendar,
+  GitBranch,
+  TrendingUp,
+  ArrowLeft,
+} from "lucide-react";
+import Link from "next/link";
+import { Skeleton } from "../ui/skeleton";
+import { usePullRequests } from "@/hooks/usePullRequests";
 
 export function OpenSourcePage() {
-  const { data: pullRequests = [], isLoading: loading, error } = usePullRequests()
-  const [selectedRepo, setSelectedRepo] = useState<string>("all")
-  const [sortBy, setSortBy] = useState<"recent" | "oldest">("recent")
+  const {
+    data: pullRequests = [],
+    isLoading: loading,
+    error,
+  } = usePullRequests();
+  const [selectedRepo, setSelectedRepo] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<"recent" | "oldest">("recent");
 
   // Get unique repositories
-  const repositories = ["all", ...new Set(pullRequests.map((pr) => pr.repository))]
+  const repositories = [
+    "all",
+    ...new Set(pullRequests.map((pr) => pr.repository)),
+  ];
 
   // Filter and sort PRs
   const filteredPRs = pullRequests
     .filter((pr) => selectedRepo === "all" || pr.repository === selectedRepo)
     .sort((a, b) => {
-      const dateA = new Date(a.mergedAt).getTime()
-      const dateB = new Date(b.mergedAt).getTime()
-      return sortBy === "recent" ? dateB - dateA : dateA - dateB
-    })
+      const dateA = new Date(a.mergedAt).getTime();
+      const dateB = new Date(b.mergedAt).getTime();
+      return sortBy === "recent" ? dateB - dateA : dateA - dateB;
+    });
 
   return (
     <div className="min-h-screen py-20 relative overflow-hidden">
@@ -45,13 +59,19 @@ export function OpenSourcePage() {
       </motion.div>
 
       <div className="container mx-auto px-6 relative z-10">
-        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="mb-8">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="mb-8"
+        >
           <Link
             href="/"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card hover:border-purple-400/50 transition-all duration-300 group"
           >
             <ArrowLeft className="w-4 h-4 text-purple-400 group-hover:-translate-x-1 transition-transform" />
-            <span className="text-sm text-gray-400 group-hover:text-purple-400 transition-colors">Back to Home</span>
+            <span className="text-sm text-gray-400 group-hover:text-purple-400 transition-colors">
+              Back to Home
+            </span>
           </Link>
         </motion.div>
 
@@ -66,7 +86,9 @@ export function OpenSourcePage() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card mb-4 hover:border-purple-400/50 transition-colors"
           >
             <Github className="w-5 h-5 text-purple-400" />
-            <span className="text-sm text-gray-400">Open Source Contributions</span>
+            <span className="text-sm text-gray-400">
+              Open Source Contributions
+            </span>
           </Link>
 
           <motion.div
@@ -111,10 +133,13 @@ export function OpenSourcePage() {
           </motion.div>
 
           <div className="space-y-4">
-            <h1 className="text-5xl md:text-6xl font-bold gradient-text">OnlyDust Contributions</h1>
+            <h1 className="text-5xl md:text-6xl font-bold gradient-text">
+              OnlyDust Contributions
+            </h1>
             <p className="text-gray-400 max-w-3xl mx-auto text-lg">
-              A comprehensive view of my open source journey. Every pull request represents a contribution to the
-              ecosystem, solving real problems and building innovative solutions.
+              A comprehensive view of my open source journey. Every pull request
+              represents a contribution to the ecosystem, solving real problems
+              and building innovative solutions.
             </p>
           </div>
         </motion.div>
@@ -155,7 +180,9 @@ export function OpenSourcePage() {
           <div className="text-center py-20">
             <div className="glass-card p-8 rounded-xl max-w-md mx-auto">
               <p className="text-red-400 mb-4">
-                {error instanceof Error ? error.message : "Failed to fetch pull requests"}
+                {error instanceof Error
+                  ? error.message
+                  : "Failed to fetch pull requests"}
               </p>
               <Button
                 onClick={() => window.location.reload()}
@@ -182,7 +209,9 @@ export function OpenSourcePage() {
                   <div className="p-2 rounded-lg bg-purple-500/10">
                     <TrendingUp className="w-5 h-5 text-purple-400" />
                   </div>
-                  <div className="text-3xl font-bold text-purple-400">{pullRequests.length}</div>
+                  <div className="text-3xl font-bold text-purple-400">
+                    {pullRequests.length}
+                  </div>
                 </div>
                 <div className="text-sm text-gray-400">Total Pull Requests</div>
               </div>
@@ -203,7 +232,10 @@ export function OpenSourcePage() {
                     <Github className="w-5 h-5 text-green-400" />
                   </div>
                   <div className="text-3xl font-bold text-green-400">
-                    {pullRequests.reduce((acc, pr) => acc + pr.closedIssues.length, 0)}
+                    {pullRequests.reduce(
+                      (acc, pr) => acc + pr.closedIssues.length,
+                      0,
+                    )}
                   </div>
                 </div>
                 <div className="text-sm text-gray-400">Issues Closed</div>
@@ -214,7 +246,10 @@ export function OpenSourcePage() {
                     <Calendar className="w-5 h-5 text-orange-400" />
                   </div>
                   <div className="text-3xl font-bold text-orange-400">
-                    {pullRequests.reduce((acc, pr) => acc + pr.labels.length, 0)}
+                    {pullRequests.reduce(
+                      (acc, pr) => acc + pr.labels.length,
+                      0,
+                    )}
                   </div>
                 </div>
                 <div className="text-sm text-gray-400">Total Labels</div>
@@ -250,7 +285,9 @@ export function OpenSourcePage() {
                   {/* Sort */}
                   <select
                     value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as "recent" | "oldest")}
+                    onChange={(e) =>
+                      setSortBy(e.target.value as "recent" | "oldest")
+                    }
                     className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-purple-400/50 transition-colors"
                   >
                     <option value="recent" className="bg-gray-900">
@@ -266,12 +303,19 @@ export function OpenSourcePage() {
               {/* Results Count */}
               <div className="mt-4 pt-4 border-t border-white/10">
                 <p className="text-sm text-gray-400">
-                  Showing <span className="text-purple-400 font-semibold">{filteredPRs.length}</span> contribution
+                  Showing{" "}
+                  <span className="text-purple-400 font-semibold">
+                    {filteredPRs.length}
+                  </span>{" "}
+                  contribution
                   {filteredPRs.length !== 1 ? "s" : ""}
                   {selectedRepo !== "all" && (
                     <>
                       {" "}
-                      in <span className="text-blue-400 font-semibold">{selectedRepo}</span>
+                      in{" "}
+                      <span className="text-blue-400 font-semibold">
+                        {selectedRepo}
+                      </span>
                     </>
                   )}
                 </p>
@@ -295,11 +339,13 @@ export function OpenSourcePage() {
               <div className="text-center py-20">
                 <div className="glass-card p-8 rounded-xl max-w-md mx-auto">
                   <Filter className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                  <p className="text-gray-400 mb-4">No contributions found with the selected filters.</p>
+                  <p className="text-gray-400 mb-4">
+                    No contributions found with the selected filters.
+                  </p>
                   <Button
                     onClick={() => {
-                      setSelectedRepo("all")
-                      setSortBy("recent")
+                      setSelectedRepo("all");
+                      setSortBy("recent");
                     }}
                     variant="outline"
                     className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border-purple-500/50"
@@ -323,5 +369,5 @@ export function OpenSourcePage() {
         )}
       </div>
     </div>
-  )
+  );
 }
