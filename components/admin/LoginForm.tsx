@@ -39,6 +39,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 /**
  * Login Form Component
  * Handles email/password and Google OAuth authentication
+ * Fixed for Auth.js v5 production deployment
  */
 export function LoginForm() {
   const router = useRouter();
@@ -55,25 +56,38 @@ export function LoginForm() {
 
   /**
    * Handle email/password login
+   * Using redirect: false and manual navigation for production reliability
    */
   const onSubmit = async (data: LoginFormData) => {
     setLoading(true);
 
     try {
+      // Use redirect: false to handle navigation manually
       const result = await signIn("credentials", {
         email: data.email,
         password: data.password,
-        redirect: false,
+        redirect: false, // Important: handle redirect manually
       });
 
+      // Check for authentication errors
       if (result?.error) {
         toast.error("Invalid email or password");
         return;
       }
 
-      toast.success("Login successful!");
-      router.push("/admin");
-      router.refresh();
+      // Check if login was successful
+      if (result?.ok) {
+        toast.success("Login successful!");
+
+        // Use window.location for more reliable redirect in production
+        window.location.href = "/admin";
+
+        // Alternative: Use router.push with refresh
+        // router.push("/admin");
+        // router.refresh();
+      } else {
+        toast.error("Authentication failed. Please try again.");
+      }
     } catch (error) {
       console.error("Login error:", error);
       toast.error("An error occurred. Please try again.");
@@ -84,11 +98,16 @@ export function LoginForm() {
 
   /**
    * Handle Google OAuth login
+   * Using explicit callbackUrl
    */
   const handleGoogleLogin = async () => {
     setGoogleLoading(true);
     try {
-      await signIn("google", { callbackUrl: "/admin" });
+      // Use explicit callbackUrl for production
+      await signIn("google", {
+        callbackUrl: `${window.location.origin}/admin`,
+        redirect: true,
+      });
     } catch (error) {
       console.error("Google login error:", error);
       toast.error("Failed to login with Google");
