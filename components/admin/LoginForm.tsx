@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/form";
 import { Loader2, Lock, Mail } from "lucide-react";
 import { toast } from "sonner";
+import { verifyCredentials } from "@/lib/auth-actions";
 
 /**
  * Login Form Schema
@@ -56,40 +57,49 @@ export function LoginForm() {
 
   /**
    * Handle email/password login
-   * Using redirect: false and manual navigation for production reliability
+   * Now verifies credentials via Server Action before calling signIn
    */
   const onSubmit = async (data: LoginFormData) => {
     setLoading(true);
 
     try {
-      // Use redirect: false to handle navigation manually
+      const verificationResult = await verifyCredentials(
+        data.email,
+        data.password,
+      );
+
+      if (!verificationResult.success || !verificationResult.user) {
+        toast.error(verificationResult.error || "Invalid email or password");
+        setLoading(false);
+        return;
+      }
+
+      // This passes the verified user data to the authorize callback
       const result = await signIn("credentials", {
-        email: data.email,
-        password: data.password,
-        redirect: false, // Important: handle redirect manually
+        email: verificationResult.user.email,
+        id: verificationResult.user.id,
+        name: verificationResult.user.name,
+        role: verificationResult.user.role,
+        username: verificationResult.user.username,
+        avatar: verificationResult.user.avatar,
+        redirect: false,
       });
 
       // Check for authentication errors
       if (result?.error) {
-        toast.error("Invalid email or password");
+        toast.error("Authentication failed");
         return;
       }
 
       // Check if login was successful
       if (result?.ok) {
         toast.success("Login successful!");
-
-        // Use window.location for more reliable redirect in production
         window.location.href = "/admin";
-
-        // Alternative: Use router.push with refresh
-        // router.push("/admin");
-        // router.refresh();
       } else {
         toast.error("Authentication failed. Please try again.");
       }
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("[v0] Login error:", error);
       toast.error("An error occurred. Please try again.");
     } finally {
       setLoading(false);
@@ -109,7 +119,7 @@ export function LoginForm() {
         redirect: true,
       });
     } catch (error) {
-      console.error("Google login error:", error);
+      console.error("[v0] Google login error:", error);
       toast.error("Failed to login with Google");
       setGoogleLoading(false);
     }
@@ -235,11 +245,11 @@ export function LoginForm() {
                 />
                 <path
                   fill="currentColor"
-                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
                 />
                 <path
                   fill="currentColor"
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
                 <path
                   fill="currentColor"

@@ -1,38 +1,42 @@
-import { auth } from "@/auth"
-import { NextResponse } from "next/server"
+import { auth } from "@/auth";
+import { NextResponse } from "next/server";
 
-/**
- * Middleware to protect admin routes
- * Uses Auth.js v5 auth() function for proper session handling
- */
 export default auth((req) => {
-  const { pathname } = req.nextUrl
-  const isLoggedIn = !!req.auth
-  const userRole = req.auth?.user?.role
+  const { nextUrl } = req;
+  const isLoggedIn = !!req.auth;
+  const userRole = req.auth?.user?.role;
 
-  // Protect admin routes (except login and setup)
-  if (pathname.startsWith("/admin") && pathname !== "/admin/login" && pathname !== "/admin/setup") {
+  const isOnAdminPage = nextUrl.pathname.startsWith("/admin");
+  const isOnLoginPage = nextUrl.pathname === "/admin/login";
+  const isOnSetupPage = nextUrl.pathname === "/admin/setup";
+
+  // Allow access to login and setup pages
+  if (isOnLoginPage || isOnSetupPage) {
+    // If already logged in as admin, redirect to admin dashboard
+    if (isLoggedIn && userRole === "admin" && isOnLoginPage) {
+      return NextResponse.redirect(new URL("/admin", nextUrl));
+    }
+    return NextResponse.next();
+  }
+
+  // Protect admin routes
+  if (isOnAdminPage) {
     if (!isLoggedIn) {
-      // Not authenticated - redirect to login
-      const loginUrl = new URL("/admin/login", req.url)
-      loginUrl.searchParams.set("callbackUrl", pathname)
-      return NextResponse.redirect(loginUrl)
+      // Redirect to login with callback URL
+      const loginUrl = new URL("/admin/login", nextUrl);
+      loginUrl.searchParams.set("callbackUrl", nextUrl.pathname);
+      return NextResponse.redirect(loginUrl);
     }
 
     if (userRole !== "admin") {
-      // Not an admin - redirect to home
-      return NextResponse.redirect(new URL("/", req.url))
+      // Not an admin - redirect to home or show error
+      return NextResponse.redirect(new URL("/", nextUrl));
     }
   }
 
-  return NextResponse.next()
-})
+  return NextResponse.next();
+});
 
 export const config = {
-  matcher: [
-    // Match all admin routes
-    "/admin/:path*",
-    // Exclude static files and API routes
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
-  ],
-}
+  matcher: ["/admin/:path*"],
+};
