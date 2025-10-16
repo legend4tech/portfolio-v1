@@ -82,7 +82,11 @@ export function About() {
                 <br />
 
                 <Typewriter
-                  words={["Dennis Ajulu", "A Fullstack Developer", "A Web3 Developer"]}
+                  words={[
+                    "Dennis Ajulu",
+                    "A Fullstack Developer",
+                    "A Web3 Developer",
+                  ]}
                   loop={0}
                   cursor
                   cursorStyle="|"
@@ -101,12 +105,13 @@ export function About() {
               strong focus on crafting dynamic and user-friendly digital
               experiences. I specialize in Full-Stack development, blending
               creativity with performance optimization to build seamless,
-              high-quality web applications. I&lsquo;m also a Web3 developer
+              high-quality web applications. I’m also a Web3 developer
               contributing to the decentralized web through open-source
-              platforms like OnlyDust. I&lsquo;ve actively contributed to
-              ecosystems such as Starknet, continuously pushing boundaries and
-              creating innovative solutions that make an impact. Always eager to
-              learn and grow, I strive to build technology that matters.
+              platforms like OnlyDust. As a Starknet Basecamp 13 Graduate with
+              Honours, I’ve actively contributed to ecosystems such as Starknet,
+              Stellar, and Aztec, continuously pushing boundaries and creating
+              innovative solutions that make an impact. Always eager to learn
+              and grow, I strive to build technology that truly matters.
             </motion.p>
 
             <motion.div
