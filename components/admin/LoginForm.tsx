@@ -43,7 +43,6 @@ type LoginFormData = z.infer<typeof loginSchema>;
  * Fixed for Auth.js v5 production deployment
  */
 export function LoginForm() {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
