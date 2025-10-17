@@ -175,3 +175,121 @@
 .drop-shadow-glow {
   filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
 }
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes tech-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
+    border-color: rgba(6, 182, 212, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+    border-color: rgba(6, 182, 212, 0.4);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.5) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(180deg);
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 20px rgba(168, 85, 247, 0.4),
+      0 0 40px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    box-shadow:
+      0 0 40px rgba(168, 85, 247, 0.6),
+      0 0 80px rgba(59, 130, 246, 0.5);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes stat-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.1);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.2);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes stat-glow {
+  0%,
+  100% {
+    box-shadow: 0 4px 20px rgba(168, 85, 247, 0.1);
+  }
+  50% {
+    box-shadow: 0 4px 30px rgba(168, 85, 247, 0.2);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.tech-pill {
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  animation: tech-glow 3s ease-in-out infinite;
+}
+
+.tech-pill:nth-child(2) {
+  animation-delay: 0.5s;
+}
+.tech-pill:nth-child(3) {
+  animation-delay: 1s;
+}
+.tech-pill:nth-child(4) {
+  animation-delay: 1.5s;
+}
+
+.stat-card {
+  animation: stat-pulse 3s ease-in-out infinite;
+}
+
+.stat-card:nth-child(2) {
+  animation-delay: 0.5s;
+}
+
+.stat-card:nth-child(3) {
+  animation-delay: 1s;
+}
+
+.stat-card-glow {
+  animation: stat-glow 3s ease-in-out infinite;
+}
+
+.stat-card-glow:nth-child(3) {
+  animation-delay: 1s;
+}
