@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     siteName: "Legend4Tech",
     images: [
       {
-        url: "https://legend4tech.com/og-image.png", // ✅ Absolute URL required for WhatsApp
+        url: "https://legend4tech.com/og-image-V1.png", // ✅ Absolute URL required for WhatsApp
         width: 1200,
         height: 630,
         alt: "Legend4Tech - Full-Stack & Web3 Developer",
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     title: "Legend4Tech - Full-Stack & Web3 Developer",
     description:
       "Passionate Computer Scientist specializing in Full-Stack and Web3 development. Building innovative digital experiences.",
-    images: ["https://legend4tech.com/og-image.png"], // ✅ Absolute URL
+    images: ["https://legend4tech.com/og-image-V1.png"], // ✅ Absolute URL
     creator: "@legend4tech",
     site: "@legend4tech",
   },
