@@ -340,7 +340,7 @@ export function OpenSourcePage() {
                       {" "}
                       matching{" "}
                       <span className="text-green-400 font-semibold">
-                        "{searchQuery}"
+                        &quot;{searchQuery}&quot;
                       </span>
                     </>
                   )}
