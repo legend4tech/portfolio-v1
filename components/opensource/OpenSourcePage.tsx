@@ -236,7 +236,7 @@ export function OpenSourcePage() {
                     />
                     {isRefetching ? "Refreshing..." : "Refresh"}
                   </Button>
-                  <Button
+                  {/* <Button
                     onClick={handleExportData}
                     variant="outline"
                     size="sm"
@@ -244,7 +244,7 @@ export function OpenSourcePage() {
                   >
                     <Download className="w-4 h-4 mr-2" />
                     Export
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
 
