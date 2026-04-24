@@ -1,15 +1,10 @@
 // app/api/github/pull-requests/route.ts
 import { NextResponse } from "next/server";
 import { Octokit } from "@octokit/rest";
-import NodeCache from "node-cache";
+import { Redis } from "@upstash/redis";
 
-// Initialize cache with 1 hour TTL
-const cache = new NodeCache({ stdTTL: 3600, checkperiod: 600 });
-
-// Rate limiting
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
-const RATE_LIMIT = 10; // requests per minute
-const RATE_WINDOW = 60000; // 1 minute
+const redis = Redis.fromEnv();
+const CACHE_TTL_SECONDS = 3600; // 1 hour
 
 interface GitHubPRResponse {
   id: number;
@@ -24,229 +19,179 @@ interface GitHubPRResponse {
   additions: number;
   deletions: number;
   changedFiles: number;
-  author: {
-    login: string;
-    avatarUrl: string;
-  };
+  author: { login: string; avatarUrl: string };
   reviewers: Array<{ login: string; avatarUrl: string }>;
   commits: number;
 }
 
-function checkRateLimit(identifier: string): boolean {
-  const now = Date.now();
-  const record = rateLimitMap.get(identifier);
+// ─── Simple concurrency limiter (no extra deps needed) ────────────────────────
+function pLimit(concurrency: number) {
+  let active = 0;
+  const queue: Array<() => void> = [];
+  const next = () => {
+    if (active < concurrency && queue.length) {
+      active++;
+      queue.shift()!();
+    }
+  };
+  return function limit<T>(fn: () => Promise<T>): Promise<T> {
+    return new Promise((resolve, reject) => {
+      queue.push(() => {
+        fn()
+          .then(resolve)
+          .catch(reject)
+          .finally(() => {
+            active--;
+            next();
+          });
+      });
+      next();
+    });
+  };
+}
 
-  if (!record || now > record.resetTime) {
-    rateLimitMap.set(identifier, { count: 1, resetTime: now + RATE_WINDOW });
-    return true;
+function extractClosedIssues(body: string, owner: string, repo: string) {
+  const pattern =
+    /(closes|closed|close|fixes|fixed|fix|resolves|resolved|resolve)\s+#(\d+)/gi;
+  const issues = new Map<string, { number: string; url: string }>();
+  let match;
+  while ((match = pattern.exec(body)) !== null) {
+    issues.set(match[2], {
+      number: match[2],
+      url: `https://github.com/${owner}/${repo}/issues/${match[2]}`,
+    });
   }
-
-  if (record.count >= RATE_LIMIT) {
-    return false;
-  }
-
-  record.count++;
-  return true;
+  return [...issues.values()];
 }
 
 async function fetchPRsWithPagination(
   octokit: Octokit,
-  username: string
+  username: string,
 ): Promise<GitHubPRResponse[]> {
   const allPRs: GitHubPRResponse[] = [];
-  let page = 1;
-  const perPage = 100;
+  const limit = pLimit(5); // max 5 concurrent PR detail fetches
+  const MAX_PAGES = 2; // 200 PRs max — increase if you need more
 
-  try {
-    // Search for merged PRs
-    const searchQuery = `type:pr author:${username} is:merged sort:updated-desc`;
-
-    while (true) {
-      const { data } = await octokit.search.issuesAndPullRequests({
-        q: searchQuery,
-        per_page: perPage,
-        page,
-      });
-
-      if (data.items.length === 0) break;
-
-      // Fetch detailed info for each PR in parallel
-      const prDetailsPromises = data.items.map(async (item) => {
-        const [owner, repo] = item.repository_url.split("/").slice(-2);
-
-        try {
-          const [prDetail, reviews, commits] = await Promise.all([
-            octokit.pulls.get({
-              owner,
-              repo,
-              pull_number: item.number,
-            }),
-            octokit.pulls.listReviews({
-              owner,
-              repo,
-              pull_number: item.number,
-            }),
-            octokit.pulls.listCommits({
-              owner,
-              repo,
-              pull_number: item.number,
-            }),
-          ]);
-
-          // Extract closed issues from PR body
-          const closedIssues = extractClosedIssues(
-            prDetail.data.body || "",
-            owner,
-            repo
-          );
-
-          // Get unique reviewers
-          const uniqueReviewers = Array.from(
-            new Map(
-              reviews.data.map((review) => [
-                review.user?.login,
-                {
-                  login: review.user?.login || "",
-                  avatarUrl: review.user?.avatar_url || "",
-                },
-              ])
-            ).values()
-          ).filter((reviewer) => reviewer.login !== username);
-
-          return {
-            id: prDetail.data.id,
-            title: prDetail.data.title,
-            url: prDetail.data.html_url,
-            mergedAt: prDetail.data.merged_at || "",
-            repository: `${owner}/${repo}`,
-            repositoryUrl: `https://github.com/${owner}/${repo}`,
-            labels: prDetail.data.labels.map((label) =>
-              typeof label === "string"
-                ? { name: label, color: "808080" }
-                : { name: label.name || "", color: label.color || "808080" }
-            ),
-            closedIssues,
-            description: prDetail.data.body || null,
-            additions: prDetail.data.additions || 0,
-            deletions: prDetail.data.deletions || 0,
-            changedFiles: prDetail.data.changed_files || 0,
-            author: {
-              login: prDetail.data.user?.login || username,
-              avatarUrl: prDetail.data.user?.avatar_url || "",
-            },
-            reviewers: uniqueReviewers,
-            commits: commits.data.length,
-          } as GitHubPRResponse;
-        } catch (error) {
-          console.error(`Error fetching PR #${item.number}:`, error);
-          return null;
-        }
-      });
-
-      const prDetails = (await Promise.all(prDetailsPromises)).filter(
-        (pr): pr is GitHubPRResponse => pr !== null
-      );
-
-      allPRs.push(...prDetails);
-
-      // Check if we have more pages
-      if (data.items.length < perPage) break;
-      page++;
-
-      // Prevent infinite loops
-      if (page > 10) break;
-    }
-
-    return allPRs;
-  } catch (error) {
-    console.error("Error fetching PRs:", error);
-    throw error;
-  }
-}
-
-function extractClosedIssues(
-  body: string,
-  owner: string,
-  repo: string
-): Array<{ number: string; url: string }> {
-  const closedKeywords = [
-    "closes",
-    "closed",
-    "close",
-    "fixes",
-    "fixed",
-    "fix",
-    "resolves",
-    "resolved",
-    "resolve",
-  ];
-  const issuePattern = new RegExp(
-    `(${closedKeywords.join("|")})\\s+#(\\d+)`,
-    "gi"
-  );
-  const issues: Array<{ number: string; url: string }> = [];
-  let match;
-
-  while ((match = issuePattern.exec(body)) !== null) {
-    const issueNumber = match[2];
-    issues.push({
-      number: issueNumber,
-      url: `https://github.com/${owner}/${repo}/issues/${issueNumber}`,
+  for (let page = 1; page <= MAX_PAGES; page++) {
+    const { data } = await octokit.search.issuesAndPullRequests({
+      q: `type:pr author:${username} is:merged sort:updated-desc`,
+      per_page: 100,
+      page,
     });
+
+    if (data.items.length === 0) break;
+
+    const pageResults = await Promise.all(
+      data.items.map((item) =>
+        limit(async () => {
+          const [owner, repo] = item.repository_url.split("/").slice(-2);
+          try {
+            const prDetail = await octokit.pulls.get({
+              owner,
+              repo,
+              pull_number: item.number,
+            });
+
+            const [reviews, commits] = await Promise.all([
+              octokit.pulls.listReviews({
+                owner,
+                repo,
+                pull_number: item.number,
+              }),
+              octokit.pulls.listCommits({
+                owner,
+                repo,
+                pull_number: item.number,
+              }),
+            ]);
+
+            const uniqueReviewers = Array.from(
+              new Map(
+                reviews.data.map((r) => [
+                  r.user?.login,
+                  {
+                    login: r.user?.login || "",
+                    avatarUrl: r.user?.avatar_url || "",
+                  },
+                ]),
+              ).values(),
+            ).filter((r) => r.login !== username);
+
+            return {
+              id: prDetail.data.id,
+              title: prDetail.data.title,
+              url: prDetail.data.html_url,
+              mergedAt: prDetail.data.merged_at || "",
+              repository: `${owner}/${repo}`,
+              repositoryUrl: `https://github.com/${owner}/${repo}`,
+              labels: prDetail.data.labels.map((l) =>
+                typeof l === "string"
+                  ? { name: l, color: "808080" }
+                  : { name: l.name || "", color: l.color || "808080" },
+              ),
+              closedIssues: extractClosedIssues(
+                prDetail.data.body || "",
+                owner,
+                repo,
+              ),
+              description: prDetail.data.body || null,
+              additions: prDetail.data.additions || 0,
+              deletions: prDetail.data.deletions || 0,
+              changedFiles: prDetail.data.changed_files || 0,
+              author: {
+                login: prDetail.data.user?.login || username,
+                avatarUrl: prDetail.data.user?.avatar_url || "",
+              },
+              reviewers: uniqueReviewers,
+              commits: commits.data.length,
+            } as GitHubPRResponse;
+          } catch (err) {
+            console.error(
+              `Error fetching PR #${item.number}:`,
+              (err as Error).message,
+            );
+            return null;
+          }
+        }),
+      ),
+    );
+
+    allPRs.push(
+      ...pageResults.filter((pr): pr is GitHubPRResponse => pr !== null),
+    );
+
+    if (data.items.length < 100) break;
   }
 
-  return Array.from(
-    new Map(issues.map((issue) => [issue.number, issue])).values()
+  return allPRs.sort(
+    (a, b) => new Date(b.mergedAt).getTime() - new Date(a.mergedAt).getTime(),
   );
 }
 
-export async function GET(request: Request) {
+export async function GET() {
   const startTime = Date.now();
+  const username = process.env.GITHUB_USERNAME;
+  const token = process.env.GITHUB_TOKEN;
 
+  if (!username) {
+    return NextResponse.json(
+      { error: "GitHub username not configured" },
+      { status: 500 },
+    );
+  }
+
+  const cacheKey = `prs:${username}`;
+
+  // ── Try Redis cache first ──────────────────────────────────────────────────
   try {
-    // Get client identifier for rate limiting
-    const forwarded = request.headers.get("x-forwarded-for");
-    const ip = forwarded ? forwarded.split(",")[0] : "unknown";
-
-    // Check rate limit
-    if (!checkRateLimit(ip)) {
-      return NextResponse.json(
-        {
-          error: "Rate limit exceeded. Please try again later.",
-          retryAfter: 60,
-        },
-        {
-          status: 429,
-          headers: {
-            "Retry-After": "60",
-            "X-RateLimit-Limit": RATE_LIMIT.toString(),
-            "X-RateLimit-Remaining": "0",
-          },
-        }
-      );
-    }
-
-    const username = process.env.GITHUB_USERNAME;
-    const token = process.env.GITHUB_TOKEN;
-
-    if (!username) {
-      return NextResponse.json(
-        { error: "GitHub username not configured" },
-        { status: 500 }
-      );
-    }
-
-    // Check cache
-    const cacheKey = `prs:${username}`;
-    const cachedData = cache.get<GitHubPRResponse[]>(cacheKey);
-
-    if (cachedData) {
-      console.log(`[Cache Hit] Returning ${cachedData.length} PRs from cache`);
+    const cached = await redis.get<GitHubPRResponse[]>(cacheKey);
+    if (cached) {
+      console.log(`[Cache Hit] ${cached.length} PRs from Redis`);
       return NextResponse.json(
         {
           success: true,
-          data: cachedData,
-          count: cachedData.length,
+          data: cached,
+          count: cached.length,
           cached: true,
           fetchTime: Date.now() - startTime,
         },
@@ -256,30 +201,30 @@ export async function GET(request: Request) {
               "public, s-maxage=3600, stale-while-revalidate=86400",
             "X-Cache": "HIT",
           },
-        }
+        },
       );
     }
+  } catch (cacheErr) {
+    // Redis being down should never crash the app — just skip cache
+    console.warn("[Redis] Cache read failed, fetching fresh:", cacheErr);
+  }
 
-    // Initialize Octokit
-    const octokit = new Octokit({
-      auth: token,
-      request: {
-        timeout: 30000, // 30 seconds
-      },
-    });
+  // ── Fetch fresh from GitHub ────────────────────────────────────────────────
+  const octokit = new Octokit({
+    auth: token,
+    request: { timeout: 10000 },
+  });
 
-    console.log(`[API] Fetching PRs for ${username}...`);
+  try {
     const pullRequests = await fetchPRsWithPagination(octokit, username);
+    const fetchTime = Date.now() - startTime;
 
-    // Sort by merge date (most recent first)
-    pullRequests.sort(
-      (a, b) => new Date(b.mergedAt).getTime() - new Date(a.mergedAt).getTime()
-    );
+    // Write to Redis (fire and forget — don't let a cache write failure break the response)
+    redis
+      .set(cacheKey, pullRequests, { ex: CACHE_TTL_SECONDS })
+      .catch((err) => console.warn("[Redis] Cache write failed:", err));
 
-    // Cache the results
-    cache.set(cacheKey, pullRequests);
-
-    console.log(`[API] Successfully fetched ${pullRequests.length} PRs`);
+    console.log(`[API] Fetched ${pullRequests.length} PRs in ${fetchTime}ms`);
 
     return NextResponse.json(
       {
@@ -287,19 +232,13 @@ export async function GET(request: Request) {
         data: pullRequests,
         count: pullRequests.length,
         cached: false,
-        fetchTime: Date.now() - startTime,
+        fetchTime,
         stats: {
           totalPRs: pullRequests.length,
-          totalAdditions: pullRequests.reduce(
-            (sum, pr) => sum + pr.additions,
-            0
-          ),
-          totalDeletions: pullRequests.reduce(
-            (sum, pr) => sum + pr.deletions,
-            0
-          ),
-          totalCommits: pullRequests.reduce((sum, pr) => sum + pr.commits, 0),
-          repositories: new Set(pullRequests.map((pr) => pr.repository)).size,
+          totalAdditions: pullRequests.reduce((s, p) => s + p.additions, 0),
+          totalDeletions: pullRequests.reduce((s, p) => s + p.deletions, 0),
+          totalCommits: pullRequests.reduce((s, p) => s + p.commits, 0),
+          repositories: new Set(pullRequests.map((p) => p.repository)).size,
         },
       },
       {
@@ -308,51 +247,37 @@ export async function GET(request: Request) {
             "public, s-maxage=3600, stale-while-revalidate=86400",
           "X-Cache": "MISS",
         },
-      }
+      },
     );
   } catch (error) {
-    console.error("[API Error]", error);
-
-    const errorMessage =
+    const msg =
       error instanceof Error ? error.message : "Failed to fetch pull requests";
-
-    return NextResponse.json(
-      {
-        error: errorMessage,
-        success: false,
-        timestamp: new Date().toISOString(),
-      },
-      { status: 500 }
-    );
+    console.error("[API Error]", error);
+    return NextResponse.json({ error: msg, success: false }, { status: 500 });
   }
 }
 
-// Revalidate endpoint
+// ─── Cache invalidation ───────────────────────────────────────────────────────
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { secret, username } = body;
+    const { secret, username } = await request.json();
 
-    // Verify secret
     if (secret !== process.env.REVALIDATE_SECRET) {
       return NextResponse.json({ error: "Invalid secret" }, { status: 401 });
     }
 
     const targetUsername = username || process.env.GITHUB_USERNAME;
-    const cacheKey = `prs:${targetUsername}`;
-
-    // Clear cache
-    cache.del(cacheKey);
+    await redis.del(`prs:${targetUsername}`);
 
     return NextResponse.json({
       success: true,
-      message: "Cache invalidated successfully",
+      message: "Cache cleared from Redis",
       timestamp: new Date().toISOString(),
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Failed to invalidate cache" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

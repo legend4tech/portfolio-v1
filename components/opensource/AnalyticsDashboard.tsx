@@ -1,4 +1,3 @@
-// components/opensource/AnalyticsDashboard.tsx
 "use client";
 
 import { motion } from "framer-motion";
@@ -108,11 +107,11 @@ export function AnalyticsDashboard() {
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
     const recentPRs = pullRequests.filter(
-      (pr) => new Date(pr.mergedAt) >= thirtyDaysAgo
+      (pr) => new Date(pr.mergedAt) >= thirtyDaysAgo,
     );
 
     const weeklyPRs = pullRequests.filter(
-      (pr) => new Date(pr.mergedAt) >= sevenDaysAgo
+      (pr) => new Date(pr.mergedAt) >= sevenDaysAgo,
     );
 
     // Calculate average stats
@@ -135,11 +134,11 @@ export function AnalyticsDashboard() {
         acc[day] = (acc[day] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
 
     const mostProductiveDay = Object.entries(dayFrequency).sort(
-      ([, a], [, b]) => b - a
+      ([, a], [, b]) => b - a,
     )[0];
 
     return {
@@ -153,7 +152,7 @@ export function AnalyticsDashboard() {
         : "N/A",
       totalCodeChanges: pullRequests.reduce(
         (sum, pr) => sum + (pr.additions || 0) + (pr.deletions || 0),
-        0
+        0,
       ),
     };
   }, [pullRequests]);

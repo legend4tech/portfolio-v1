@@ -6,7 +6,8 @@ export async function POST(request: Request) {
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File;
-
+    console.log("RAW KEY:", process.env.MY_AWS_ACCESS_KEY);
+    console.log("RAW SECRET:", process.env.AWS_SECRET_ACCESS_KEY);
     if (!file || file.size === 0) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }

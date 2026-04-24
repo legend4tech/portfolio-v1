@@ -31,6 +31,7 @@ import type { DBProject } from "@/types/portfolioTypes";
 import { projectSchema, type ProjectFormData } from "@/lib/project_schema";
 import { toast } from "sonner";
 import Image from "next/image";
+import { uploadFileToS3 } from "@/lib/uploadFileToS3";
 
 interface ProjectFormProps {
   project?: DBProject;
@@ -66,32 +67,13 @@ export function ProjectForm({ project }: ProjectFormProps) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("File size must be less than 5MB");
-      return;
-    }
-
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to upload image");
-      }
-
-      form.setValue("image", data.fileUrl);
-      setImagePreview(data.fileUrl);
+      const fileUrl = await uploadFileToS3(file);
+      form.setValue("image", fileUrl);
+      setImagePreview(fileUrl);
       toast.success("Image uploaded successfully!");
     } catch (error) {
-      console.error("Error uploading image:", error);
       toast.error(
         error instanceof Error ? error.message : "Failed to upload image",
       );
@@ -99,7 +81,6 @@ export function ProjectForm({ project }: ProjectFormProps) {
       setUploading(false);
     }
   };
-
   const handleImageUrlChange = (url: string) => {
     form.setValue("image", url);
     setImagePreview(url);
