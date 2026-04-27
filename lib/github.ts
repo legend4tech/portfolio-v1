@@ -70,8 +70,8 @@ export async function fetchMergedPullRequests(
       headers: {
         Accept: "application/vnd.github.v3+json",
         // Add GitHub token if available for higher rate limits
-        ...(process.env.GITHUB_TOKEN && {
-          Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+        ...(process.env.GH_TOKEN && {
+          Authorization: `Bearer ${process.env.GH_TOKEN}`,
         }),
       },
       next: { revalidate: 86400 }, // Cache for 24 hours
