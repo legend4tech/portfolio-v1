@@ -2,7 +2,7 @@ import { Octokit } from "@octokit/rest";
 import { Redis } from "@upstash/redis";
 
 const redis = Redis.fromEnv();
-const username = process.env.GH_USERNAME!;
+const username = "legend4tech";
 const octokit = new Octokit({ auth: process.env.GH_TOKEN });
 
 interface GitHubPRResponse {
@@ -72,6 +72,7 @@ async function sync() {
       per_page: 100,
       page,
     });
+    console.log("returned-data", data);
 
     if (!data.items.length) break;
 
