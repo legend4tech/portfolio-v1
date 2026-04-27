@@ -107,7 +107,7 @@ export function OpenSourcePage() {
             </span>
           </Link>
 
-          {/* OnlyDust Logo */}
+          {/* OnlyDust × Drips Logos */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -118,45 +118,86 @@ export function OpenSourcePage() {
             }}
             className="flex justify-center mb-8"
           >
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="relative glass-card p-8 rounded-2xl border border-purple-500/30 hover:border-purple-400/50 transition-all duration-300 bg-black/40 backdrop-blur-xl"
-            >
-              <Image
-                src="/onlydust-logo.png"
-                alt="OnlyDust Logo"
-                width={96}
-                height={96}
-                className="w-24 h-24 object-contain"
-                priority
-              />
+            <div className="flex flex-row items-center gap-4">
+              {/* OnlyDust */}
               <motion.div
-                animate={{
-                  boxShadow: [
-                    "0 0 20px rgba(168, 85, 247, 0.3)",
-                    "0 0 40px rgba(168, 85, 247, 0.5)",
-                    "0 0 20px rgba(168, 85, 247, 0.3)",
-                  ],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="absolute inset-0 rounded-2xl pointer-events-none"
-              />
-            </motion.div>
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="relative glass-card p-6 rounded-2xl border border-purple-500/30 hover:border-purple-400/50 transition-all duration-300 bg-black/40 backdrop-blur-xl"
+              >
+                <Image
+                  src="/onlydust-logo.png"
+                  alt="OnlyDust Logo"
+                  width={80}
+                  height={80}
+                  className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain"
+                  priority
+                />
+                <motion.div
+                  animate={{
+                    boxShadow: [
+                      "0 0 20px rgba(168, 85, 247, 0.3)",
+                      "0 0 40px rgba(168, 85, 247, 0.5)",
+                      "0 0 20px rgba(168, 85, 247, 0.3)",
+                    ],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="absolute inset-0 rounded-2xl pointer-events-none"
+                />
+              </motion.div>
+
+              {/* × divider */}
+              <span className="text-gray-500 font-light text-2xl select-none">
+                ×
+              </span>
+
+              {/* Drips */}
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="relative glass-card p-6 rounded-2xl border border-green-500/30 hover:border-green-400/50 transition-all duration-300 bg-black/40 backdrop-blur-xl"
+              >
+                <Image
+                  src="/drips-logo.png"
+                  alt="Drips Logo"
+                  width={80}
+                  height={80}
+                  className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain"
+                  priority
+                />
+                <motion.div
+                  animate={{
+                    boxShadow: [
+                      "0 0 20px rgba(34, 197, 94, 0.3)",
+                      "0 0 40px rgba(34, 197, 94, 0.5)",
+                      "0 0 20px rgba(34, 197, 94, 0.3)",
+                    ],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 1.5,
+                  }}
+                  className="absolute inset-0 rounded-2xl pointer-events-none"
+                />
+              </motion.div>
+            </div>
           </motion.div>
 
           <div className="space-y-4">
             <h1 className="text-5xl md:text-6xl font-bold gradient-text">
-              OnlyDust Contributions
+              OnlyDust & Drips Contributions
             </h1>
             <p className="text-gray-400 max-w-3xl mx-auto text-lg">
-              A comprehensive view of my open source journey. Every pull request
-              represents a contribution to the ecosystem, solving real problems
-              and building innovative solutions.
+              A comprehensive view of my open source journey across OnlyDust and
+              Drips. Every pull request represents a contribution to the
+              ecosystem, solving real problems and building innovative
+              solutions.
             </p>
           </div>
         </motion.div>
@@ -236,15 +277,6 @@ export function OpenSourcePage() {
                     />
                     {isRefetching ? "Refreshing..." : "Refresh"}
                   </Button>
-                  {/* <Button
-                    onClick={handleExportData}
-                    variant="outline"
-                    size="sm"
-                    className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border-blue-500/50 hover:text-white"
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    Export
-                  </Button> */}
                 </div>
               </div>
 

@@ -1,6 +1,23 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 
+// ─── Featured / pinned repositories ──────────────────────────────────────────
+// Cards from these repos always appear at the top with a golden treatment.
+// Edit this list to add or remove featured repos.
+export const FEATURED_REPOS = new Set([
+  "https://github.com/Consulting-Manao/tansu",
+  "https://github.com/boundlessfi/boundless",
+  "https://github.com/kindfi-org/kindfi",
+  "https://github.com/akkuea/akkuea",
+  "https://github.com/OFFER-HUB/offer-hub-monorepo",
+]);
+
+export function pinFeaturedToTop(prs: GitHubPR[]): GitHubPR[] {
+  const featured = prs.filter((pr) => FEATURED_REPOS.has(pr.repositoryUrl));
+  const rest = prs.filter((pr) => !FEATURED_REPOS.has(pr.repositoryUrl));
+  return [...featured, ...rest];
+}
+
 // Types matching the API response
 export interface GitHubLabel {
   name: string;
@@ -107,7 +124,7 @@ async function fetchPullRequests(): Promise<{
       "[usePullRequests] Failed to fetch pull requests:",
       response.status,
       response.statusText,
-      errorData
+      errorData,
     );
 
     if (response.status === 429) {
@@ -115,7 +132,7 @@ async function fetchPullRequests(): Promise<{
     }
 
     throw new Error(
-      errorData.error || `Failed to fetch pull requests (${response.status})`
+      errorData.error || `Failed to fetch pull requests (${response.status})`,
     );
   }
 
@@ -139,7 +156,7 @@ async function fetchPullRequests(): Promise<{
   console.log(
     "[usePullRequests] Parsed pull requests:",
     pullRequests.length,
-    "PRs"
+    "PRs",
   );
 
   return {
@@ -156,16 +173,16 @@ function calculateStats(pullRequests: GitHubPR[]): PRStats {
     repositories: new Set(pullRequests.map((pr) => pr.repository)).size,
     totalIssuesClosed: pullRequests.reduce(
       (acc, pr) => acc + pr.closedIssues.length,
-      0
+      0,
     ),
     totalCommits: pullRequests.reduce((acc, pr) => acc + (pr.commits || 0), 0),
     totalAdditions: pullRequests.reduce(
       (acc, pr) => acc + (pr.additions || 0),
-      0
+      0,
     ),
     totalDeletions: pullRequests.reduce(
       (acc, pr) => acc + (pr.deletions || 0),
-      0
+      0,
     ),
   };
 }
@@ -214,7 +231,7 @@ export function usePullRequests(): UsePullRequestsResult {
 
 // Hook for filtered and sorted pull requests
 export function useFilteredPullRequests(
-  options: UseFilteredPullRequestsOptions = {}
+  options: UseFilteredPullRequestsOptions = {},
 ): UsePullRequestsResult {
   const { repository = "all", searchQuery = "", sortBy = "recent" } = options;
   const { data: allPRs, stats: allStats, ...rest } = usePullRequests();
@@ -238,8 +255,8 @@ export function useFilteredPullRequests(
           pr.labels.some((label) => label.name.toLowerCase().includes(query)) ||
           pr.author.login.toLowerCase().includes(query) ||
           pr.reviewers.some((reviewer) =>
-            reviewer.login.toLowerCase().includes(query)
-          )
+            reviewer.login.toLowerCase().includes(query),
+          ),
       );
     }
 
@@ -248,13 +265,13 @@ export function useFilteredPullRequests(
       case "recent":
         filtered.sort(
           (a, b) =>
-            new Date(b.mergedAt).getTime() - new Date(a.mergedAt).getTime()
+            new Date(b.mergedAt).getTime() - new Date(a.mergedAt).getTime(),
         );
         break;
       case "oldest":
         filtered.sort(
           (a, b) =>
-            new Date(a.mergedAt).getTime() - new Date(b.mergedAt).getTime()
+            new Date(a.mergedAt).getTime() - new Date(b.mergedAt).getTime(),
         );
         break;
       case "additions":
@@ -265,7 +282,8 @@ export function useFilteredPullRequests(
         break;
     }
 
-    return filtered;
+    // Always pin featured repos to the top, regardless of active sort
+    return pinFeaturedToTop(filtered);
   }, [allPRs, repository, searchQuery, sortBy]);
 
   const filteredStats = useMemo(() => {
@@ -291,11 +309,11 @@ export function usePRAnalytics() {
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
     const recentPRs = pullRequests.filter(
-      (pr) => new Date(pr.mergedAt) >= thirtyDaysAgo
+      (pr) => new Date(pr.mergedAt) >= thirtyDaysAgo,
     );
 
     const weeklyPRs = pullRequests.filter(
-      (pr) => new Date(pr.mergedAt) >= sevenDaysAgo
+      (pr) => new Date(pr.mergedAt) >= sevenDaysAgo,
     );
 
     // Calculate average stats
@@ -321,11 +339,11 @@ export function usePRAnalytics() {
         acc[day] = (acc[day] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
 
     const mostProductiveDay = Object.entries(dayFrequency).sort(
-      ([, a], [, b]) => b - a
+      ([, a], [, b]) => b - a,
     )[0];
 
     // Get repository distribution
@@ -334,7 +352,7 @@ export function usePRAnalytics() {
         acc[pr.repository] = (acc[pr.repository] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
 
     const topRepositories = Object.entries(repoFrequency)
@@ -349,7 +367,7 @@ export function usePRAnalytics() {
         });
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
 
     const topReviewers = Object.entries(reviewerFrequency)
@@ -368,7 +386,7 @@ export function usePRAnalytics() {
         : "N/A",
       totalCodeChanges: pullRequests.reduce(
         (sum, pr) => sum + (pr.additions || 0) + (pr.deletions || 0),
-        0
+        0,
       ),
       dayFrequency,
       repoFrequency,

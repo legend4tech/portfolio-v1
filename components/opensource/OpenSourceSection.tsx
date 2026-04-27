@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import { Github, ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { usePullRequests } from "@/hooks/usePullRequests";
+import { pinFeaturedToTop } from "@/hooks/usePullRequests";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 
@@ -17,7 +18,7 @@ export function OpenSourceSection() {
     error,
   } = usePullRequests();
 
-  const displayedPRs = pullRequests.slice(0, 6);
+  const displayedPRs = pinFeaturedToTop(pullRequests).slice(0, 6);
 
   return (
     <section
@@ -47,28 +48,47 @@ export function OpenSourceSection() {
                 Open Source Contributions
               </span>
             </motion.div>
-            <motion.div
-              className="glass-card p-3 rounded-xl border border-white/5 hover:border-purple-500/30 transition-all"
-              whileHover={{ scale: 1.1, rotate: 5 }}
-            >
-              <Image
-                src="/onlydust-logo.png"
-                alt="OnlyDust"
-                width={40}
-                height={40}
-                className="object-contain"
-              />
-            </motion.div>
+
+            {/* OnlyDust × Drips logos */}
+            <div className="flex items-center gap-3">
+              <motion.div
+                className="glass-card p-3 rounded-xl border border-white/5 hover:border-purple-500/30 transition-all"
+                whileHover={{ scale: 1.1, rotate: 5 }}
+              >
+                <Image
+                  src="/onlydust-logo.png"
+                  alt="OnlyDust"
+                  width={40}
+                  height={40}
+                  className="object-contain"
+                />
+              </motion.div>
+              <span className="text-gray-500 font-light text-xl select-none">
+                ×
+              </span>
+              <motion.div
+                className="glass-card p-3 rounded-xl border border-white/5 hover:border-green-500/30 transition-all"
+                whileHover={{ scale: 1.1, rotate: -5 }}
+              >
+                <Image
+                  src="/drips-logo.png"
+                  alt="Drips"
+                  width={40}
+                  height={40}
+                  className="object-contain"
+                />
+              </motion.div>
+            </div>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold gradient-text relative inline-block">
-            OnlyDust Contributions
+            OnlyDust & Drips Contributions
             <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-purple-500/50 via-green-500/50 to-purple-500/50 rounded-full blur-sm" />
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto flex items-center justify-center gap-2 flex-wrap">
             <Sparkles className="w-4 h-4 text-green-400" />
             My merged pull requests and contributions to open source projects
-            through OnlyDust. Building in public and contributing to the
-            ecosystem.
+            through OnlyDust and Drips. Building in public and contributing to
+            the ecosystem across both platforms.
             <Sparkles className="w-4 h-4 text-purple-400" />
           </p>
         </motion.div>

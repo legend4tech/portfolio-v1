@@ -15,12 +15,12 @@ jobs:
           node-version: 20
 
       - name: Install deps
-        run: npm install @octokit/rest @upstash/redis tsx
+        run: npm install @octokit/rest @octokit/graphql @upstash/redis tsx
 
       - name: Run sync
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          GH_USERNAME: "legend4tech"
+          GH_USERNAME: ${{ secrets.GH_USERNAME }}
           UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
           UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
         run: npx tsx scripts/sync-prs.ts

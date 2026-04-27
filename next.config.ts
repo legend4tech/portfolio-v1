@@ -55,6 +55,13 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      // GitHub avatars (for PR reviewer images)
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+        port: "",
+        pathname: "/**",
+      },
       // Other common image hosts you might use
       {
         protocol: "https",
