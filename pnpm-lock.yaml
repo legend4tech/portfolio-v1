@@ -23,6 +23,9 @@ importers:
       '@lottiefiles/dotlottie-react':
         specifier: ^0.13.0
         version: 0.13.5(react@19.2.3)
+      '@octokit/graphql':
+        specifier: ^9.0.3
+        version: 9.0.3
       '@octokit/rest':
         specifier: ^22.0.1
         version: 22.0.1
