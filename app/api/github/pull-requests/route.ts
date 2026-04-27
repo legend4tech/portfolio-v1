@@ -6,7 +6,7 @@ const redis = Redis.fromEnv();
 
 export async function GET() {
   try {
-    const username = process.env.GITHUB_USERNAME!;
+    const username = process.env.GH_USERNAME!;
     const cached = await redis.get(username);
 
     if (!cached) {

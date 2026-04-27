@@ -2,7 +2,7 @@ import { Octokit } from "@octokit/rest";
 import { Redis } from "@upstash/redis";
 
 const redis = Redis.fromEnv();
-const username = process.env.GITHUB_USERNAME!;
+const username = process.env.GH_USERNAME!;
 const octokit = new Octokit({ auth: process.env.GH_TOKEN });
 
 interface GitHubPRResponse {
@@ -35,7 +35,13 @@ function pLimit(concurrency: number) {
   return function limit<T>(fn: () => Promise<T>): Promise<T> {
     return new Promise((resolve, reject) => {
       queue.push(() => {
-        fn().then(resolve).catch(reject).finally(() => { active--; next(); });
+        fn()
+          .then(resolve)
+          .catch(reject)
+          .finally(() => {
+            active--;
+            next();
+          });
       });
       next();
     });
@@ -43,7 +49,8 @@ function pLimit(concurrency: number) {
 }
 
 function extractClosedIssues(body: string, owner: string, repo: string) {
-  const pattern = /(closes|closed|close|fixes|fixed|fix|resolves|resolved|resolve)\s+#(\d+)/gi;
+  const pattern =
+    /(closes|closed|close|fixes|fixed|fix|resolves|resolved|resolve)\s+#(\d+)/gi;
   const issues = new Map<string, { number: string; url: string }>();
   let match;
   while ((match = pattern.exec(body)) !== null) {
@@ -75,17 +82,28 @@ async function sync() {
           try {
             const [prDetail, reviews, commits] = await Promise.all([
               octokit.pulls.get({ owner, repo, pull_number: item.number }),
-              octokit.pulls.listReviews({ owner, repo, pull_number: item.number }),
-              octokit.pulls.listCommits({ owner, repo, pull_number: item.number }),
+              octokit.pulls.listReviews({
+                owner,
+                repo,
+                pull_number: item.number,
+              }),
+              octokit.pulls.listCommits({
+                owner,
+                repo,
+                pull_number: item.number,
+              }),
             ]);
 
             const uniqueReviewers = Array.from(
               new Map(
                 reviews.data.map((r) => [
                   r.user?.login,
-                  { login: r.user?.login || "", avatarUrl: r.user?.avatar_url || "" },
-                ])
-              ).values()
+                  {
+                    login: r.user?.login || "",
+                    avatarUrl: r.user?.avatar_url || "",
+                  },
+                ]),
+              ).values(),
             ).filter((r) => r.login !== username);
 
             return {
@@ -98,9 +116,13 @@ async function sync() {
               labels: prDetail.data.labels.map((l) =>
                 typeof l === "string"
                   ? { name: l, color: "808080" }
-                  : { name: l.name || "", color: l.color || "808080" }
+                  : { name: l.name || "", color: l.color || "808080" },
               ),
-              closedIssues: extractClosedIssues(prDetail.data.body || "", owner, repo),
+              closedIssues: extractClosedIssues(
+                prDetail.data.body || "",
+                owner,
+                repo,
+              ),
               description: prDetail.data.body || null,
               additions: prDetail.data.additions || 0,
               deletions: prDetail.data.deletions || 0,
@@ -113,18 +135,23 @@ async function sync() {
               commits: commits.data.length,
             } as GitHubPRResponse;
           } catch (err) {
-            console.error(`Skipping PR #${item.number}:`, (err as Error).message);
+            console.error(
+              `Skipping PR #${item.number}:`,
+              (err as Error).message,
+            );
             return null;
           }
-        })
-      )
+        }),
+      ),
     );
 
     allPRs.push(...results.filter((pr): pr is GitHubPRResponse => pr !== null));
     if (data.items.length < 100) break;
   }
 
-  allPRs.sort((a, b) => new Date(b.mergedAt).getTime() - new Date(a.mergedAt).getTime());
+  allPRs.sort(
+    (a, b) => new Date(b.mergedAt).getTime() - new Date(a.mergedAt).getTime(),
+  );
 
   await redis.set(`prs:${username}`, allPRs, { ex: 60 * 60 * 25 });
   console.log(`✅ Synced ${allPRs.length} PRs to Redis`);
