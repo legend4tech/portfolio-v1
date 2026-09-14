@@ -3,6 +3,8 @@ import { LoginForm } from "@/components/admin/LoginForm";
 import { getDb } from "@/lib/mongodb";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Admin Login",
   description: "Login to access the admin dashboard",

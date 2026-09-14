@@ -2,6 +2,8 @@ import { getDb } from "@/lib/mongodb";
 import { redirect } from "next/navigation";
 import { SetupForm } from "@/components/admin/SetupForm";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Admin Setup Page
  * Creates the first admin user if none exists
