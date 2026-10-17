@@ -15,7 +15,8 @@ jobs:
           node-version: 20
 
       - name: Install deps
-        run: npm install @octokit/rest @octokit/graphql @upstash/redis tsx
+        run: npm install --no-package-lock @octokit/graphql @octokit/rest @upstash/redis tsx
+
 
       - name: Run sync
         env:
