@@ -118,10 +118,10 @@ export function About() {
               strong focus on crafting dynamic and user-friendly digital
               experiences. I specialize in Full-Stack development, blending
               creativity with performance optimization to build seamless,
-              high-quality web applications. I&apos;am also a Web3 developer
-              contributing to the decentralized web through open-source
-              platforms like OnlyDust. As a Starknet Basecamp 13 Graduate with
-              Honours, I&apos;ve actively contributed to ecosystems such as
+              high-quality web applications. I&apos;m also a Web3 developer
+              contributing to the decentralized web through Drips Network and
+              as a former OnlyDust Fellow. As a Starknet Basecamp 13 Graduate
+              with Honours, I&apos;ve actively contributed to ecosystems such as
               Starknet, Stellar, and Aztec, continuously pushing boundaries and
               creating innovative solutions that make an impact. Always eager to
               learn and grow, I strive to build technology that truly matters.
@@ -171,7 +171,7 @@ export function About() {
             <div className="absolute inset-4 rounded-full border border-cyan-500/10" />
             <GlowingImage
               src="/profile.jpg"
-              alt="Profile"
+              alt="Dennis Ajulu (legend4tech)"
               width={400}
               height={400}
             />

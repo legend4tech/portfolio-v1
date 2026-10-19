@@ -41,6 +41,7 @@ export function Hero() {
                   {/* Subtle underline glow */}
                   <span className="absolute -bottom-2 left-0 w-full h-0.5 bg-gradient-to-r from-cyan-500/50 via-blue-500/50 to-purple-500/50 rounded-full blur-sm" />
                 </span>
+                <span className="sr-only"> - Dennis Ajulu (legend4tech)</span>
               </h1>
               <p className="text-xl text-gray-400">
                 <Typewriter
