@@ -25,7 +25,7 @@ const socialLinks = [
     name: "Let's Connect",
     icon: "/linkedin.png",
     color: "bg-blue-500/10",
-    link: "#",
+    link: "https://www.linkedin.com/in/legend4tech/",
     fullWidth: true,
   },
   {
